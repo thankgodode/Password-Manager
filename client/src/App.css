@@ -1,38 +1,656 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  height: 600px;
+  width: 360px;
+  background: white;
+  overflow: hidden;
+  position: relative;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 1.5rem 1.7rem;
+  /* overflow: scroll; */
+}
+
+/* Wrapper div for all pages */
+.wrap {
+  width: 100%;
+  position: relative;
+  height: 600px;
+  /* overflow: hidden; */
+}
+
+/* Register Page Styling */
+
+.blue {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 50%;
+  background: #3c02ea;
+}
+
+.white {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  background: white;
+}
+
+content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+content .img {
+  width: 55px;
+  height: 55px;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+}
+
+content img {
+  width: 35px;
+}
+
+content .btn {
+  width: 85px;
+  padding: 0.4rem 0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.404);
+  font-family: poppins;
+  cursor: pointer;
+}
+
+content .signup {
+  background: darkblue;
+  cursor: pointer;
+}
+
+content .login {
+  cursor: pointer;
+  background: #3c02ea;
+}
+
+/* Signup Page Styling */
+
+.wrap .back_ico {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  background: #3c02ea;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: 0.5s;
+  z-index: 10;
+}
+
+.wrap .back_ico:hover {
+  background: #170158;
+}
+
+.wrap .figure {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 450px;
+
+  /* margin: 100px 0 0 0; */
+}
+
+.figure .title {
+  display: flex;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  margin: 0 0 25px 0;
+}
+
+.figure .title h1 {
+  font-family: poppins;
+  text-align: center;
+  font-size: 2.3rem;
+  font-weight: 700;
+}
+
+.title .large {
+  background: black;
+  padding: 0.05rem 0.05rem;
+  border-radius: 5px;
+  width: 150px;
+}
+
+.title .small {
+  background: black;
+  padding: 0.05rem 0.05rem;
+  border-radius: 5px;
+  width: 75px;
+}
+
+.figure .form {
+  display: flex;
+  /* align-items: center; */
+  width: 100%;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form input {
+  background: #e3d9ff;
+}
+
+.form input::placeholder {
+  color: rgba(7, 7, 7, 0.644);
+}
+
+.st {
+  /* background: #3c02ea; */
+  padding: 0.7rem 0rem;
+  font-size: 1rem;
+  font-family: poppins;
+  width: 100%;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  text-indent: 1rem;
+  transition: 0.5s;
+}
+
+.form button {
+  background: #01b419;
+
   color: white;
+  cursor: pointer;
 }
 
-.App-link {
-  color: #61dafb;
+.form button:hover {
+  background: #170158;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.figure .register_with {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 25px 0 0 0;
+}
+
+.register_with span {
+  width: 100%;
+  padding: 0.05rem 0.05rem;
+  background: black;
+}
+
+.register_with label {
+  width: 100%;
+  text-align: center;
+  padding: 0 0.4rem;
+}
+
+.figure .google_ico {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 25px 0 0 0;
+  cursor: pointer;
+}
+
+/* Dashboard Stylings */
+.wrap .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header .nav {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  background: #3403c2;
+  color: white;
+  padding: 0.5rem;
+  font-family: "poppins";
+}
+
+.header .settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.header .dashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.figure.dashboard button {
+  width: 100%;
+  padding: 0.8rem 0;
+  background: #9e7dff;
+  border: none;
+  margin: 15px 0;
+  font-family: poppins;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Add Password Styling */
+
+.wrap .add_password {
+  width: 300px;
+  height: 420px;
+  background: #3c02ea;
+  padding: 1rem 1rem;
+  justify-content: left;
+  border-radius: 10px;
+  color: white;
+  z-index: 10;
+}
+
+.add_password input {
+  background: white;
+}
+
+.figure h2 {
+  text-align: center;
+  color: white;
+  font-family: poppins;
+  font-weight: 700;
+  margin: 0 0 1.7rem 0;
+}
+
+.form button {
+  width: 100%;
+  border: none;
+  font-size: 0.9rem;
+  color: white;
+  padding: 0.5rem 0;
+  font-family: poppins;
+  margin: 1.1rem 0 0 0;
+  border-radius: 8px;
+}
+
+.form.password label {
+  font-size: 1rem;
+  color: white;
+  font-family: poppins;
+}
+
+/* Saved Password Stylinh */
+
+.wrap .saved_passwords {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  /* top: 65%;
+  left: 50%;
+  transform: translate(-50%, -65%); */
+  top: 22%;
+  position: absolute;
+  overflow-y: scroll;
+  width: 100%;
+  height: 450px;
+  z-index: 10;
+}
+
+.saved_passwords::-webkit-scrollbar {
+  display: none;
+}
+
+.wrap .search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0.65rem;
+  background: #3403c2;
+  border-radius: 50px;
+  position: absolute;
+  right: 0;
+  top: 12%;
+  cursor: pointer;
+  transition: 0.2s;
+  z-index: 10;
+}
+
+.search:hover {
+  padding: 0.65rem 0;
+  width: 100%;
+  display: flex;
+}
+
+.saved_passwords div {
+  padding: 0.8rem 0 0.8rem 1.3rem;
+  background: #e3d9ff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.saved_passwords h3 {
+  font-weight: 500;
+  color: #2b162b;
+}
+
+.search input {
+  border: none;
+  outline: none;
+  padding: 0.2rem 0;
+  text-indent: 0.9rem;
+  width: 90%;
+  display: none;
+  background: none;
+  color: #e3d9ff;
+}
+
+.search input::placeholder {
+  color: #e3d9ff;
+}
+
+.search:hover input {
+  display: flex;
+}
+
+.white_layout {
+  top: 0;
+  left: 0;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: white;
+  z-index: 1;
+}
+
+/* Show Password Styling */
+
+.form.show_password button {
+  width: 80px;
+  padding: 0.3rem 0;
+  border: none;
+  outline: none;
+  font-family: poppins;
+  font-size: 0.9rem;
+  border-radius: 15px;
+}
+
+.form .proceed {
+  background: #53cb03;
+}
+
+.form .cancel {
+  background: red;
+}
+
+/* Generate Password Styling */
+
+.wrap .generate_password {
+  width: 300px;
+  height: 420px;
+  background: #3c02ea;
+  padding: 1rem 1rem;
+  justify-content: left;
+  border-radius: 10px;
+  color: white;
+  z-index: 10;
+  /* top: 50%;
+  left: 50%;
+  width: 300px;
+  transform: translate(-50%, -50%);
+  position: absolute; */
+}
+
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.generate_password h2 {
+  color: white;
+  text-align: center;
+  margin: 0 0 1.5rem 0;
+}
+
+.form .generated_password {
+  padding: 0.5rem 1.2rem;
+  background: white;
+  border-radius: 15px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.generated_password span {
+  color: black;
+  width: 100%;
+}
+.generated_password .copy {
+  background: green;
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border: none;
+  font-family: poppins;
+  margin: 0;
+  width: 70px;
+}
+
+.password_format {
+  display: flex;
+  justify-content: center;
+  column-gap: 0.8rem;
+}
+
+.password_format input[type="checkbox"] {
+  zoom: 1.5;
+}
+
+.password_format div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Settings page styling */
+.figure h1 {
+  font-family: poppins;
+  text-align: center;
+  font-size: 2.3rem;
+  font-weight: 700;
+
+  /* margin: 0 0 1rem 0; */
+}
+
+.setting_layout {
+  z-index: 10;
+}
+
+.form .setting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 0 0 2rem 0;
+  border-bottom: 2px solid black;
+  padding: 0.5rem 0.5rem;
+}
+
+.setting h3 {
+  flex: 1;
+  font-weight: 400;
+}
+
+.figure .click {
+  background: #3c02ea;
+  padding: 0.5rem;
+  border-radius: 20px;
+  transform: rotate(180deg);
+  cursor: pointer;
+}
+
+.setting .radio {
+  width: 40px;
+  height: 20px;
+  background: #3c02ea;
+  border-radius: 20px;
+  position: relative;
+  padding: 0.1rem 0.1rem;
+  cursor: pointer;
+}
+
+.radio .toggle {
+  position: absolute;
+  /* top: 0; */
+  left: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  background: #e3d9ff;
+}
+
+/* Add Security Styling */
+
+.add_security .drop_down {
+  background: #3403c2;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 0.8rem;
+  font-family: poppins;
+}
+
+.drop_down label {
+  flex: 1;
+}
+
+.list ul li {
+  list-style-type: none;
+  margin: 0.3rem 0;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  background: #e3d9ff;
+}
+
+.add_security .add_question {
+  margin: 0.8rem 0;
+  width: 140px;
+  padding: 0.3rem 0;
+  background: #53cb03;
+  font-family: poppins;
+  border: none;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.add_security .input_question {
+  width: 100%;
+  padding: 0.7rem 0.4rem;
+  border: 1px solid #9e7dff;
+  background: #e3d9ff;
+}
+
+.add_security .save_question {
+  width: 130px;
+  color: white;
+  background: #3403c2;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Forgotten Password Stylinh */
+
+.wrap .verify_password {
+  text-align: center;
+  font-family: poppins;
+}
+
+.verify_password h3 {
+  margin: 1rem 0;
+  color: #3c02ea;
+}
+
+.verify_password p {
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin: 1rem 0;
+}
+
+.verify_password .input_code {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.input_code input {
+  /* width: 40px; */
+  height: 60px;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: #9e7dff;
+  color: white;
+  font-size: 1rem;
+  text-align: 1rem;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+.verify_password .verify_btn {
+  background: #3c02ea;
+  color: white;
+  margin: 0.8rem 0 0 0;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.verify_btn:hover {
+  background: #170158;
+}
+
+.reset_btn {
+  cursor: pointer;
+}
+
+/* Dashboard Styling */
+.dashboard button:hover {
+  background: #170158;
 }
