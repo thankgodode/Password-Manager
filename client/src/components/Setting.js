@@ -1,7 +1,19 @@
 import back_icon from "../img/arrow.svg";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Setting(props) {
+  const handleLogout = () => {
+    axios
+      .get("http://localhost:5000/logout", { withCredentials: true })
+      .then((response) => {
+        // setUser(null)
+        console.log(response);
+        window.location.href = "/signup";
+      })
+      .catch((err) => console.log("Error ", err));
+  };
+
   return (
     <>
       <div className="back_ico top" onClick={() => props.setToggleModal("")}>
@@ -28,8 +40,10 @@ export default function Setting(props) {
               <div className="toggle"></div>
             </div>
           </div>
-          <Link to="/login">
-            <button className="logout">Logout</button>
+          <Link>
+            <button className="logout" onClick={handleLogout}>
+              Logout
+            </button>
           </Link>
         </div>
       </div>

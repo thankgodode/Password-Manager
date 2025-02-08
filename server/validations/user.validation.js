@@ -27,9 +27,18 @@ function validateEmail(input) {
   return schema.validate(input);
 }
 
-function validatePassword() {
+function validatePassword(input) {
   const schema = Joi.object({
     password: Joi.string().min(5).max(255).required(),
+  });
+
+  return schema.validate(input);
+}
+
+function validateUserData() {
+  const schema = Joi.object({
+    username: Joi.string(),
+    password: Joi.string(),
   });
 
   return schema.validate(input);
@@ -40,4 +49,5 @@ module.exports = {
   validateLoginInput,
   validateEmail,
   validatePassword,
+  validateUserData,
 };

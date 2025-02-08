@@ -1,52 +1,81 @@
 const User = require("../model/user.model");
-const {
-  validateLoginInput,
-  validateRegisterInput,
-} = require("../validations/user.validation");
+const { hashPassword } = require("../utils/passwordUtil");
+
+const { validateRegisterInput } = require("../validations/user.validation");
 const sendEmail = require("../services/email.services");
-const bcrypt = require("bcrypt");
+
+const jwt = require("jsonwebtoken");
+const password = require("passport");
+
+const tempUser = {};
+
+const googleSignup = (req, res) => {
+  passport.authenticate("google");
+  res.json({ msg: "Authenticated" });
+};
 
 const registerUser = async (req, res) => {
+  const { error } = validateRegisterInput(req.body);
+  console.log(req.body);
+
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+
+  let user = await User.findOne({ email: req.body.email });
+  if (user) {
+    return res
+      .status(400)
+      .json({ message: "User with given email already exists." });
+  }
+
   try {
-    const { error } = validateRegisterInput(req.body);
-
-    if (error) {
-      return res.status(400).send({ message: error.details[0].message });
-    }
-
-    let user = await new User.find({ email: req.body.email });
-
-    if (user) {
-      return res
-        .status(400)
-        .send({ message: "User with given email already exists." });
-    }
-
     user = req.body;
 
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-
+    const hashedPassword = await hashPassword(user.password);
     user.password = hashedPassword;
 
-    const verificationCode = sendEmail(user.email);
+    console.log("Hashed password", user.password);
 
-    user.verificationCode = verificationCode;
+    let token = await sendEmail(user.email);
 
-    req.user = user;
+    user.token = token.token;
 
-    return res.status(200).json({ msg: "Signup successfully." });
+    tempUser["user"] = user;
+
+    res
+      .status(200)
+      .json({ msg: "A code has been sent to your email.", code: token.code });
   } catch (error) {
     return res.status(500).json({ msg: "Error while signing up user" });
   }
 };
 
-async function createAccount(req, res) {
-  const { verificationCode } = req.user;
+async function verifyUser(req, res) {
+  const { token } = tempUser.user;
+  const { user } = tempUser;
   const { inputCode } = req.body;
 
+  const verificationCode = jwt.verify(
+    token,
+    process.env.VERIFICATION_CODE,
+    (err, decoded) => {
+      if (err) return;
+      return decoded.code;
+    }
+  );
+
+  if (verificationCode !== inputCode) {
+    res.status(401).json({ msg: "Incorrect or expired value entered." });
+  }
+
   if (verificationCode == inputCode) {
-    await new User.create(req.user);
+    user.isVerified = true;
+    await User.create(user);
+
+    tempUser.user.token = "";
+    res.status(200).json({ msg: "Signup successfully!" });
   }
 }
 
-module.exports = { registerUser, createAccount };
+module.exports = { registerUser, verifyUser };

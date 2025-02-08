@@ -1,16 +1,21 @@
 import logo from "../img/icon_48.png";
-import { Router } from "react-router-dom";
 import Login from "./Login";
 import Signup from "./Signup";
+
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { useState } from "react";
 
 function Register() {
   const location = useLocation();
 
-  const hideLayoutRoute = ["/login", "/signup"];
+  const hideLayoutRoute = [
+    "/login",
+    "/signup",
+    "/signup/verify",
+    "/signup/success",
+  ];
   const shoudHideLayout = hideLayoutRoute.includes(location.pathname);
-  console.log(shoudHideLayout);
 
   return (
     <>

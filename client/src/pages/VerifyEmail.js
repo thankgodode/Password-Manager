@@ -1,7 +1,15 @@
 import back_icon from "../img/arrow.svg";
-import { Outlet, Link } from "react-router-dom";
+import MyContext from "../contexts/MyContext";
+
+import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import axios from "axios";
 
 export default function VerifyEmail() {
+  const [inputCode, setInputCode] = useState("");
+  const { minutes, seconds, timedout } = useContext(MyContext);
+
+  const navigate = useNavigate();
   const pasteCode = (e) => {
     const inputs = document.querySelectorAll(".input_code input");
 
@@ -14,6 +22,8 @@ export default function VerifyEmail() {
         node.value = data[index];
         node.focus();
       });
+
+      setInputCode(data.join(""));
     }
   };
 
@@ -35,17 +45,33 @@ export default function VerifyEmail() {
     });
   };
 
+  const verifyEmail = async () => {
+    try {
+      // const request = await axios.get("http://localhost:5000/verify", {
+      //   inputCode,
+      // });
+
+      // const response = await request.json();
+      // console.log(response);
+      navigate("/signup/success");
+    } catch (err) {
+      console.log("Error ", err);
+    }
+  };
+
+  useEffect(() => {}, []);
+
   return (
     <>
       <div className="wrap" onInput={deleteCode} onPaste={pasteCode}>
-        <Link to="/forgot_password">
+        <Link to="/signup">
           <div className="back_ico top">
             <img src={back_icon} alt="Back icon" />
           </div>
         </Link>
         <div className="figure verify_password">
           <div class="title">
-            <h1>Forgot Password</h1>
+            <h1>Verify Email</h1>
             <div
               style={{
                 display: "flex",
@@ -68,14 +94,19 @@ export default function VerifyEmail() {
             <input type="text" inputMode="numeric" maxlength="1" />
           </div>
           <p>
-            Code expires in: <strong>3:00s</strong>
+            Code expires in:{" "}
+            <strong>
+              {minutes}:{seconds}s
+            </strong>
           </p>
           <label>
-            Didn't get code? <strong> Send code again.</strong>
+            Didn't get code? {timedout && <strong> Send code again.</strong>}
           </label>
-          <Link to="/forgot_password/reset_password">
-            <button className="verify_btn st">Verify email address</button>
-          </Link>
+          {/* <Link to="/forgot_password/reset_password"> */}
+          <button className="verify_btn st" onClick={verifyEmail}>
+            Verify email address
+          </button>
+          {/* </Link> */}
         </div>
       </div>
     </>

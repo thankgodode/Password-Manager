@@ -1,33 +1,60 @@
 const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
+
+// const transporter = nodemailer.createTransport({
+//   host: "smtp.ethereal.email",
+//   port: 587,
+//   secure: false,
+//   auth: {
+//     user: "maddison53@ethermail.email",
+//     pass: "jn7jnAPss4f63QBp6D",
+//   },
+// });
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
-  port: 587,
-  secure: false,
+  service: "gmail",
   auth: {
-    user: "maddison53@ethermail.email",
-    pass: "jn7jnAPss4f63QBp6D",
+    user: "devdtech01@gmail.com",
+    pass: "sqgs wvbp kwkn iiyg",
   },
 });
 
-const randomNumber = () => {
+const getVerificationCode = () => {
   let num = "";
   for (let i = 0; i < 5; i++) {
-    num += Math.floor(Math.random());
+    num += Math.floor(Math.random() * 10);
   }
 
-  return num;
+  return { code: num };
 };
 
 async function sendEmail(email) {
-  const info = await transporter.sendMail({
+  const verificationCode = getVerificationCode();
+
+  const token = jwt.sign(
+    { code: verificationCode.code },
+    process.env.VERIFICATION_CODE,
+    {
+      expiresIn: "3m",
+    }
+  );
+
+  const mailOptions = {
     from: "Password Manager Team",
     to: email,
     subject: "Verification code",
-    html: `<b>${randomNumber}</b>`,
+    html: `<b>${verificationCode.code}</b>`,
+  };
+
+  await transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: ", info.response);
+    }
   });
 
-  console.log(info.messageId);
+  return { code: verificationCode.code, token };
 }
 
 module.exports = sendEmail;
