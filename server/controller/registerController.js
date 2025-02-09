@@ -16,10 +16,9 @@ const googleSignup = (req, res) => {
 
 const registerUser = async (req, res) => {
   const { error } = validateRegisterInput(req.body);
-  console.log(req.body);
 
   if (error) {
-    return res.status(400).json({ message: error.details[0].message });
+    return res.status(400).json({ message: error.details[0].message })
   }
 
   let user = await User.findOne({ email: req.body.email });
@@ -54,7 +53,7 @@ const registerUser = async (req, res) => {
 async function verifyUser(req, res) {
   const { token } = tempUser.user;
   const { user } = tempUser;
-  const { inputCode } = req.body;
+  const { inputCode } = req.body
 
   const verificationCode = jwt.verify(
     token,

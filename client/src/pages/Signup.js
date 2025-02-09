@@ -47,16 +47,28 @@ export default function Signup() {
 
   const signup = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      setIsLoading(true);
-      await sendMail(firstName, lastName, password, email);
-      navigate("/signup/verify");
+      const response = await axios.post("http://localhost:5000/register", {
+        name: `${firstName} ${lastName}`,
+        password: password,
+        email: email,
+      });
 
+      navigate("/signup/verify");
+      console.log(response.data.code)
       timeoutFunc();
+
+      setIsLoading(false)      
     } catch (err) {
-      console.log("Error ", err);
+      console.log(err.response.data.message);
+      setIsLoading(false)      
     }
+
+    
+    
+
   };
 
   const location = useLocation();

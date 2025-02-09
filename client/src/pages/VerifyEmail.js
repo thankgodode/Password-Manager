@@ -10,6 +10,7 @@ export default function VerifyEmail() {
   const { minutes, seconds, timedout } = useContext(MyContext);
 
   const navigate = useNavigate();
+
   const pasteCode = (e) => {
     const inputs = document.querySelectorAll(".input_code input");
 
@@ -47,12 +48,15 @@ export default function VerifyEmail() {
 
   const verifyEmail = async () => {
     try {
-      // const request = await axios.get("http://localhost:5000/verify", {
-      //   inputCode,
-      // });
+      const request = await axios.get("http://localhost:5000/verify", {
+        inputCode
+      });
 
-      // const response = await request.json();
-      // console.log(response);
+      const response = await request.json();
+      
+      console.log("Response", response);
+      console.log("Input code", inputCode);
+
       navigate("/signup/success");
     } catch (err) {
       console.log("Error ", err);

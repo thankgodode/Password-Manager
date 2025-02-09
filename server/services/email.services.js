@@ -44,7 +44,7 @@ async function sendEmail(email) {
     to: email,
     subject: "Verification code",
     html: `<b>${verificationCode.code}</b>`,
-  };
+  }
 
   await transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
