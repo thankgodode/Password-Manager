@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
 
 const getVerificationCode = () => {
   let num = "";
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 4; i++) {
     num += Math.floor(Math.random() * 10);
   }
 
@@ -44,7 +44,7 @@ async function sendEmail(email) {
     to: email,
     subject: "Verification code",
     html: `<b>${verificationCode.code}</b>`,
-  };
+  }
 
   await transporter.sendMail(mailOptions, function (error, info) {
     if (error) {

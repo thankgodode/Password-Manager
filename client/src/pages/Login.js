@@ -1,9 +1,36 @@
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import axios from "react"
 
 export default function Login() {
+  const [loginEmail, setLoginEmail] = useState("")
+  const [loginPassword, setLoginPassword] = useState("")
+  const [msg, setMsg] = useState("")
+  const [err, setErr] = useState("")
+
+  const navigate = useNavigate()
+
+  const loginUser = async (e) => {
+    e.preventDefault()
+
+    try {
+      const response = await axios.post("http://localhost:5000/login", {
+        email: loginEmail,
+        password: loginPassword
+      })
+      
+      navigate("/dashboard")
+    } catch (err) {
+      console.log(err.response.data.msg)     
+      setErr(true)
+      setMsg(err.response.data.msg)
+    }
+
+  }
+
   return (
     <>
       <div className="wrap">
@@ -57,7 +84,7 @@ export default function Login() {
               </Link>
             </div>
             <Link to="/dashboard">
-              <button className="createBtn st">Login</button>
+              <button className="createBtn st" onClick={loginUser}>Login</button>
             </Link>
           </form>
           <div className="register_with">

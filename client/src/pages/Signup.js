@@ -8,20 +8,20 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Signup() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [msg, setMsg] = useState("")
+  const [err, setErr] = useState(false)
 
   const {
-    sendMail,
-    timedout,
-    setTimedout,
-    setMinutes,
-    setSeconds,
+    email,
+    setEmail,
     timeoutFunc,
-  } = useContext(MyContext);
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    password,
+    setPassword } = useContext(MyContext)
 
   const navigate = useNavigate();
 
@@ -47,15 +47,30 @@ export default function Signup() {
 
   const signup = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
+    localStorage.setItem("email", {email})
 
     try {
-      setIsLoading(true);
-      await sendMail(firstName, lastName, password, email);
-      navigate("/signup/verify");
+      const response = await axios.post("http://localhost:5000/register", {
+        name: `${firstName} ${lastName}`,
+        password: password,
+        email: email,
+      });
 
+      navigate("/signup/verify");
       timeoutFunc();
+
+      setIsLoading(false)      
     } catch (err) {
-      console.log("Error ", err);
+      console.log(err.response.data.message);
+      setIsLoading(false)      
+      setErr(true)
+      setMsg(err.response.data.message)
+
+      setTimeout(() => {
+        setErr(false)
+      }, 3000)
     }
   };
 
@@ -118,6 +133,7 @@ export default function Signup() {
               <button className="createBtn st" onClick={signup}>
                 Create account
               </button>
+              {err && <h4 style={{color:"red", textAlign:"center"}}>{msg}</h4>}
             </form>
             <div className="register_with">
               <span></span>

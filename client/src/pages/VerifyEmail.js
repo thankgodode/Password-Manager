@@ -7,12 +7,28 @@ import axios from "axios";
 
 export default function VerifyEmail() {
   const [inputCode, setInputCode] = useState("");
-  const { minutes, seconds, timedout } = useContext(MyContext);
+  const [enterInput, setEnterInput] = useState([])
+  const [isPaste, setIsPaste] = useState(false)
+  const [msg, setMsg] = useState("")
+  const [error, setErr] = useState(false)
+
+  const {
+    minute,
+    second,
+    timeoutFunc,
+    email,
+    setEmail,
+    timedout,
+    firstName,
+    lastName,
+    password } = useContext(MyContext);
 
   const navigate = useNavigate();
-  const pasteCode = (e) => {
-    const inputs = document.querySelectorAll(".input_code input");
 
+  const pasteCode = (e) => {
+    setIsPaste(true)
+
+    const inputs = document.querySelectorAll(".input_code input");
     if (e.target.type == "text") {
       var data = e.clipboardData.getData("Text");
 
@@ -23,18 +39,18 @@ export default function VerifyEmail() {
         node.focus();
       });
 
-      setInputCode(data.join(""));
+      setInputCode(data.join(""))
     }
   };
 
   const deleteCode = () => {
     const inputs = document.querySelectorAll(".input_code input");
-
     inputs.forEach((node, index) => {
       node.addEventListener("keyup", (e) => {
         if (e.keyCode == 8) {
           if (!inputs[index - 1]) return;
           inputs[index - 1].focus();
+          setEnterInput(enterInput.filter((el, i) => index!==i))
         }
       });
 
@@ -47,28 +63,59 @@ export default function VerifyEmail() {
 
   const verifyEmail = async () => {
     try {
-      // const request = await axios.get("http://localhost:5000/verify", {
-      //   inputCode,
-      // });
-
-      // const response = await request.json();
-      // console.log(response);
+      const response = await axios.post("http://localhost:5000/verify", {
+        inputCode : isPaste ? inputCode : enterInput.join("")
+      });
+      
+      // setMsg(response.data.message)
       navigate("/signup/success");
+
     } catch (err) {
-      console.log("Error ", err);
+      console.log("Error ", err.response.data.msg);
+      setErr(true)
+      setMsg(err.response.data.msg)
+
+      setTimeout(() => {
+        setErr(false)
+      }, 3000)
     }
   };
 
-  useEffect(() => {}, []);
+  const resendCode = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/register", {
+        name: `${firstName} ${lastName}`,
+        password: password,
+        email:email
+      })
+
+      setTimeout(() => {
+        timeoutFunc()
+      }, 1000)
+      
+    } catch (err) {
+      setMsg(err.response.data.message)
+    }
+  }
+
+  const navigateBack = () => {
+    navigate("/signup")
+    window.location.reload()
+
+  }
+
+  useEffect(() => {
+    setEmail(localStorage.getItem("email"))
+  }, []);
 
   return (
     <>
       <div className="wrap" onInput={deleteCode} onPaste={pasteCode}>
-        <Link to="/signup">
-          <div className="back_ico top">
+        {/* <Link to="/signup"> */}
+          <div className="back_ico top" onClick={navigateBack}> 
             <img src={back_icon} alt="Back icon" />
           </div>
-        </Link>
+        {/* </Link> */}
         <div className="figure verify_password">
           <div class="title">
             <h1>Verify Email</h1>
@@ -86,22 +133,26 @@ export default function VerifyEmail() {
             </div>
           </div>
           <p>Verify email address to proceed</p>
-          <h3>Enter the 4 digit code sent to your mail ode*****@gmail.com</h3>
+          <h3>Enter the 4 digit code sent to your mail {email}</h3>
           <div className="input_code">
-            <input type="text" inputMode="numeric" maxlength="1" />
-            <input type="text" inputMode="numeric" maxlength="1" />
-            <input type="text" inputMode="numeric" maxlength="1" />
-            <input type="text" inputMode="numeric" maxlength="1" />
+            <input type="text" inputMode="numeric" maxlength="1" onInput={(e) => setEnterInput([e.target.value])}/>
+            <input type="text" inputMode="numeric" maxlength="1" onInput={(e) => setEnterInput([...enterInput, e.target.value])}/>
+            <input type="text" inputMode="numeric" maxlength="1" onInput={(e) =>setEnterInput([...enterInput, e.target.value])}/>
+            <input type="text" inputMode="numeric" maxlength="1" onInput={(e) => setEnterInput([...enterInput, e.target.value])}/>
           </div>
           <p>
             Code expires in:{" "}
             <strong>
-              {minutes}:{seconds}s
+              {minute}:{second}s
             </strong>
           </p>
           <label>
-            Didn't get code? {timedout && <strong> Send code again.</strong>}
+            Didn't get code? {timedout && <strong style={{cursor:"pointer"}} onClick={() => {
+              resendCode()
+              
+            }}>Send code again.</strong>}
           </label>
+           {error && <h4 style={{color:"red"}}>{msg}</h4>}
           {/* <Link to="/forgot_password/reset_password"> */}
           <button className="verify_btn st" onClick={verifyEmail}>
             Verify email address
