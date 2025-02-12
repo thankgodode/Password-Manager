@@ -50,10 +50,12 @@ const registerUser = async (req, res) => {
   }
 };
 
-async function verifyUser(req, res) {
+const verifyUser = async (req, res) => {
   const { token } = tempUser.user;
   const { user } = tempUser;
   const { inputCode } = req.body
+
+  console.log("Req body", req.body)
 
   const verificationCode = jwt.verify(
     token,
@@ -64,13 +66,15 @@ async function verifyUser(req, res) {
     }
   );
 
+  console.log("VV ", verificationCode, inputCode)
+
   if (verificationCode !== inputCode) {
     res.status(401).json({ msg: "Incorrect or expired value entered." });
   }
 
   if (verificationCode == inputCode) {
     user.isVerified = true;
-    await User.create(user);
+    User.create(user);
 
     tempUser.user.token = "";
     res.status(200).json({ msg: "Signup successfully!" });

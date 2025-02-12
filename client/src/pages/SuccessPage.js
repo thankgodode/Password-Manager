@@ -19,7 +19,7 @@ export default function SuccessPage() {
             style={{ width: "350px" }}
           />
           <h1 style={{ color: "green", textAlign: "center" }}>
-            Successfully reset password!
+            Successfully created account!
           </h1>
         </content>
       </div>

@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
 
 const getVerificationCode = () => {
   let num = "";
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 4; i++) {
     num += Math.floor(Math.random() * 10);
   }
 
