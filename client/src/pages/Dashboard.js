@@ -1,12 +1,37 @@
 import setting_ico from "../img/setting.svg";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import GeneratePassword from "../components/GeneratePassword";
 import SavedPassword from "../components/SavedPassword";
 import AddPassword from "../components/AddPassword";
 import Setting from "../components/Setting";
 
+import { useNavigate } from "react-router-dom";
+
+import axios from "axios"
+
 export default function Dashboard() {
   const [toggleModal, setToggleModal] = useState("");
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const auth = await axios.get("http://localhost:5000/dashboard", 
+          { withCredentials: true }
+        );
+        console.log(auth)
+        
+      } catch (error) {
+        
+        console.log(error)
+        navigate("/login")
+      }
+    }
+
+    checkAuth()
+      
+  },[])
+
+  const navigate = useNavigate()
 
   function toggleSavedPassword() {
     setToggleModal("saved");
@@ -23,6 +48,7 @@ export default function Dashboard() {
   function openSetting() {
     setToggleModal("setting");
   }
+
 
   return (
     <>

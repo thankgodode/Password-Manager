@@ -1,32 +1,81 @@
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import axios from "react"
+import axios from "axios"
 
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
   const [msg, setMsg] = useState("")
   const [err, setErr] = useState("")
+  const [userData,setUserData] = useState("")
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const auth = await axios.get("http://localhost:5000/dashboard", 
+          { withCredentials: true }
+        );
+
+        navigate("/dashboard")
+        console.log(auth)
+        
+      } catch (error) {
+        
+        console.log(error)
+        // navigate("/login")
+      }
+    }
+
+    checkAuth()
+      
+  }, [])
+  
   const navigate = useNavigate()
 
   const loginUser = async (e) => {
     e.preventDefault()
 
+    if (!loginEmail || !loginPassword) {
+      setErr(true)
+      setMsg("Input field(s) cannot be left blank :)")
+
+      setTimeout(() => {
+        setErr(false)
+      }, 3000)
+      
+      return
+    }
+
     try {
       const response = await axios.post("http://localhost:5000/login", {
         email: loginEmail,
         password: loginPassword
+      }, {
+        withCredentials: true
       })
       
+      setUserData(response.data)
+
       navigate("/dashboard")
     } catch (err) {
-      console.log(err.response.data.msg)     
       setErr(true)
-      setMsg(err.response.data.msg)
+      
+      if (err.response) {
+        console.log(err.response.data.msg)     
+        setMsg(err.response.data.msg)
+      
+      } else {
+        console.log(err)     
+        setMsg("Please check your internet connection :)")
+      }
+
+
+      setTimeout(() => {
+        setErr(false)
+      },3000)
     }
 
   }
@@ -56,11 +105,17 @@ export default function Login() {
             </div>
           </div>
           <form className="form">
-            <input type="email" className="email st" placeholder="Email" />
+            <input
+              type="email"
+              className="email st"
+              placeholder="Email"
+              onInput={(e) => setLoginEmail(e.target.value)}
+            />
             <input
               type="password"
               className="password st"
               placeholder="Password"
+              onInput={(e) => setLoginPassword(e.target.value)}
             />
             <div
               style={{
@@ -83,10 +138,11 @@ export default function Login() {
                 </h4>
               </Link>
             </div>
-            <Link to="/dashboard">
+            {/* <Link to="/dashboard"> */}
               <button className="createBtn st" onClick={loginUser}>Login</button>
-            </Link>
+            {/* </Link> */}
           </form>
+          {err && <h4 style={{color:"red",textAlign:"center"}}>{msg}</h4>}
           <div className="register_with">
             <span></span>
             <label>Or login with</label>

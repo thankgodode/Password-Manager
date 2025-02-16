@@ -49,7 +49,7 @@ export default function Signup() {
     e.preventDefault();
     setIsLoading(true);
 
-    localStorage.setItem("email", {email})
+    localStorage.setItem("email", email)
 
     try {
       const response = await axios.post("http://localhost:5000/register", {

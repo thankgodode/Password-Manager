@@ -17,7 +17,7 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ msg: "Incorrect email or password provided" });
+      return res.status(400).json({ msg: "Incorrect email or password provided" });
     }
 
     const match = await comparePassword(password, user.password);
@@ -33,8 +33,11 @@ const loginUser = async (req, res) => {
 
     res.cookie("token", token, {
       withCredentials: true,
-      httpOnly: false,
-    });
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge:24*60*60*1000
+    })
 
     res.status(201).json({ msg: "Successfully logged in user!" });
   } catch (err) {

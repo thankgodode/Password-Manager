@@ -19,7 +19,6 @@ const forgotPassword = async (req, res) => {
   }
 
   const token = await sendEmail(email);
-  console.log("Token ", token)
   
   var tokenSchema = await Token.findOne({ userId: user._id });
 

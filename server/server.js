@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
 
+const authRoute = require("./middleware/userVerification")
+
 const cors = require("cors");
 const connectDB = require("./db/connectDB");
 
@@ -52,7 +54,7 @@ app.use("/logout", require("./routes/logout"));
 app.use("/forgot-password", require("./routes/forgotPassword"));
 
 app.use(require("./middleware/userVerification"));
-app.use("/dashboard", require("./routes/dashboard"));
+app.use("/dashboard", require("./routes/dashboard"))
 app.use("/dashboard", require("./routes/userData"));
 
 app.get("/", (req, res) => {
