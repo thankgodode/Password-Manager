@@ -3,6 +3,7 @@ import google_icon from "../img/google.svg";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import API from "../utils/api"
 import axios from "axios"
 
 export default function Login() {
@@ -10,30 +11,27 @@ export default function Login() {
   const [loginPassword, setLoginPassword] = useState("")
   const [msg, setMsg] = useState("")
   const [err, setErr] = useState("")
-  const [userData,setUserData] = useState("")
+  const [userData, setUserData] = useState("")
+  
+  const navigate = useNavigate()
+
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const auth = await axios.get("http://localhost:5000/dashboard", 
-          { withCredentials: true }
-        );
+    try {
+      const auth = await API.get("/dashboard")
+      console.log("Redirecting to dashboard...")
 
-        navigate("/dashboard")
-        console.log(auth)
-        
-      } catch (error) {
-        
-        console.log(error)
-        // navigate("/login")
-      }
+      navigate("/dashboard")
+    } catch (error) {
+      console.log(error)
+      return
     }
-
-    checkAuth()
+  }
       
-  }, [])
+  checkAuth()
+  }, [navigate])
   
-  const navigate = useNavigate()
 
   const loginUser = async (e) => {
     e.preventDefault()
@@ -57,7 +55,7 @@ export default function Login() {
         withCredentials: true
       })
       
-      setUserData(response.data)
+      localStorage.setItem("token", response.data.token)
 
       navigate("/dashboard")
     } catch (err) {
@@ -89,6 +87,7 @@ export default function Login() {
           </div>
         </Link>
         <div className="figure">
+          {/* <button onClick={checkAuth}>Refresh</button> */}
           <div class="title">
             <h1>Login</h1>
             <div

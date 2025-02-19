@@ -21,6 +21,7 @@ export default function VerifyEmail() {
     timedout,
     firstName,
     lastName,
+    user,
     password } = useContext(MyContext);
 
   const navigate = useNavigate();
@@ -62,10 +63,19 @@ export default function VerifyEmail() {
   };
 
   const verifyEmail = async () => {
+    console.log("User ", user)
+    const { token,name,password,email} = user;
     try {
-      const response = await axios.post("http://localhost:5000/verify", {
-        inputCode : isPaste ? inputCode : enterInput.join("")
-      });
+      const response = await axios.post(`http://localhost:5000/verify/${token}`, {
+        inputCode: isPaste ? inputCode : enterInput.join(""),
+        name,
+        password,
+        email
+      },
+        {
+          withCredentials: true 
+          
+        });
       
       // setMsg(response.data.message)
       navigate("/signup/success");

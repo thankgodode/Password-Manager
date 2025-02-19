@@ -5,6 +5,8 @@ import SavedPassword from "../components/SavedPassword";
 import AddPassword from "../components/AddPassword";
 import Setting from "../components/Setting";
 
+import API from "../utils/api"
+
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios"
@@ -12,26 +14,37 @@ import axios from "axios"
 export default function Dashboard() {
   const [toggleModal, setToggleModal] = useState("");
 
+  const navigate = useNavigate()
+
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const auth = await axios.get("http://localhost:5000/dashboard", 
-          { withCredentials: true }
-        );
-        console.log(auth)
+        const auth = await API.get("/dashboard");
+        console.log("User authorization successfully")
+
+        // const auth = await axios.get("http://localhost:5000/dashboard", 
+        //   {
+        //     withCredentials: true,
+        //     headers: {
+        //     "Authorization":`Bearer ${token}`,
+        //   }},
+          
+        //   console.log("Successfully authorized")
+        // );
         
       } catch (error) {
         
         console.log(error)
+        localStorage.removeItem("token")
         navigate("/login")
       }
     }
 
     checkAuth()
       
-  },[])
+  }, [])
 
-  const navigate = useNavigate()
 
   function toggleSavedPassword() {
     setToggleModal("saved");

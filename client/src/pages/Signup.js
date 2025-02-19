@@ -21,6 +21,8 @@ export default function Signup() {
     lastName,
     setLastName,
     password,
+    setUser,
+    user,
     setPassword } = useContext(MyContext)
 
   const navigate = useNavigate();
@@ -57,6 +59,8 @@ export default function Signup() {
         password: password,
         email: email,
       });
+
+      setUser(response.data.user)
 
       navigate("/signup/verify");
       timeoutFunc();
