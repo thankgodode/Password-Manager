@@ -49,12 +49,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/register", require("./routes/register"));
 app.use("/verify", require("./routes/verifyUser"));
-app.use("/login", require("./routes/login"));
+app.use("/login", require("./routes/login"))
+app.use("/refresh", require("./routes/refreshToken"))
+
+
 app.use("/logout", require("./routes/logout"));
 app.use("/forgot-password", require("./routes/forgotPassword"));
 
-app.use(require("./middleware/userVerification"));
-app.use("/dashboard", require("./routes/dashboard"))
+
+// app.use(require("./middleware/userVerification"))
+app.use("/dashboard", require("./middleware/userVerification"), require("./routes/dashboard"))
 app.use("/dashboard", require("./routes/userData"));
 
 app.get("/", (req, res) => {

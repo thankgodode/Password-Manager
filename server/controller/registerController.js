@@ -44,15 +44,15 @@ const registerUser = async (req, res) => {
 
     res
       .status(200)
-      .json({ msg: "A code has been sent to your email.", code: token.code });
+      .json({ msg: "A code has been sent to your email.", user:{...user}});
   } catch (error) {
     return res.status(500).json({ msg: "Error while signing up user" });
   }
 };
 
 const verifyUser = async (req, res) => {
-  const { token } = tempUser.user;
-  const { user } = tempUser;
+  const { token } = req.params;
+  const { user } = req.body;
   const { inputCode } = req.body
 
   console.log("Req body", req.body)
@@ -73,8 +73,7 @@ const verifyUser = async (req, res) => {
   }
 
   if (verificationCode == inputCode) {
-    user.isVerified = true;
-    User.create(user);
+    User.create({ ...user, isVerified: true });
 
     tempUser.user.token = "";
     res.status(200).json({ msg: "Signup successfully!" });

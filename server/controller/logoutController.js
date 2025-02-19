@@ -8,14 +8,14 @@ const logoutUser = async (req, res) => {
 
   const user = await User.findOne({ token });
   if (!user) {
-    res.clearCookie("token", { httpOnly: false, withCredentials: true });
+    res.clearCookie("token", { httpOnly: true, withCredentials: true });
     return res.sendStatus(204);
   }
 
   user.token = "";
   const result = await user.save();
 
-  res.clearCookie("token", { httpOnly: false, withCredentials: true });
+  res.clearCookie("token", { httpOnly: true, withCredentials: true });
   res.sendStatus(204);
 };
 
