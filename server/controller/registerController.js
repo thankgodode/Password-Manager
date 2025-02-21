@@ -22,25 +22,28 @@ const registerUser = async (req, res) => {
   }
 
   let user = await User.findOne({ email: req.body.email });
-  if (user) {
+  
+  if (user && user.isVerified) {
     return res
       .status(400)
       .json({ message: "User with given email already exists." });
   }
 
   try {
-    user = req.body;
+    user = req.body
 
     const hashedPassword = await hashPassword(user.password);
     user.password = hashedPassword;
 
     console.log("Hashed password", user.password);
+    
+    user = await User.create({ user })
 
     let token = await sendEmail(user.email);
 
     user.token = token.token;
 
-    tempUser["user"] = user;
+    req.user = user;
 
     res
       .status(200)
@@ -55,7 +58,7 @@ const verifyUser = async (req, res) => {
   const { user } = req.body;
   const { inputCode } = req.body
 
-  console.log("Req body", req.body)
+  console.log("Req body", req.user)
 
   const verificationCode = jwt.verify(
     token,
@@ -74,8 +77,6 @@ const verifyUser = async (req, res) => {
 
   if (verificationCode == inputCode) {
     User.create({ ...user, isVerified: true });
-
-    tempUser.user.token = "";
     res.status(200).json({ msg: "Signup successfully!" });
   }
 }

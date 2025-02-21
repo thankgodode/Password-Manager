@@ -6,16 +6,14 @@ import AddPassword from "../components/AddPassword";
 import Setting from "../components/Setting";
 
 import API from "../utils/api"
+import { AuthContext } from "../contexts/AuthProvider";
 
 import { useNavigate } from "react-router-dom";
-
 import axios from "axios"
 
 export default function Dashboard() {
   const [toggleModal, setToggleModal] = useState("");
-
-  const navigate = useNavigate()
-
+  const {isAuthenticated,setIsAuthenticated,profile,setProfile} = useState(AuthContext)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -23,6 +21,7 @@ export default function Dashboard() {
         const auth = await API.get("/dashboard");
         console.log("User authorization successfully")
 
+        setIsAuthenticated(true)
         // const auth = await axios.get("http://localhost:5000/dashboard", 
         //   {
         //     withCredentials: true,
@@ -34,10 +33,9 @@ export default function Dashboard() {
         // );
         
       } catch (error) {
-        
         console.log(error)
         localStorage.removeItem("token")
-        navigate("/login")
+        setIsAuthenticated(false)
       }
     }
 

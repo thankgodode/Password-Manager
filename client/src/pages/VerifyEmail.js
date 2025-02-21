@@ -12,6 +12,13 @@ export default function VerifyEmail() {
   const [msg, setMsg] = useState("")
   const [error, setErr] = useState(false)
 
+  useEffect(() => {
+    const email = localStorage.getItem("email")
+    if (!email) {
+      navigate("/signup")
+    }
+  }, [])
+
   const {
     minute,
     second,
@@ -64,7 +71,9 @@ export default function VerifyEmail() {
 
   const verifyEmail = async () => {
     console.log("User ", user)
-    const { token,name,password,email} = user;
+    const { token, name, password} = user;
+    const email = localStorage.getItem("email");
+
     try {
       const response = await axios.post(`http://localhost:5000/verify/${token}`, {
         inputCode: isPaste ? inputCode : enterInput.join(""),

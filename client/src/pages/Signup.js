@@ -51,7 +51,6 @@ export default function Signup() {
     e.preventDefault();
     setIsLoading(true);
 
-    localStorage.setItem("email", email)
 
     try {
       const response = await axios.post("http://localhost:5000/register", {
@@ -60,6 +59,7 @@ export default function Signup() {
         email: email,
       });
 
+      localStorage.setItem("email", email)
       setUser(response.data.user)
 
       navigate("/signup/verify");
@@ -67,6 +67,18 @@ export default function Signup() {
 
       setIsLoading(false)      
     } catch (err) {
+      if (!err.response) {
+        setMsg("Please check your internet connection :)")
+        setIsLoading(false)
+
+        setErr(true)
+        setTimeout(() => {
+          setErr(false)
+        }, 3000)
+        
+        return;
+      }
+
       console.log(err.response.data.message);
       setIsLoading(false)      
       setErr(true)

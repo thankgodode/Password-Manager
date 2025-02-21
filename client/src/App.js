@@ -17,14 +17,16 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import SuccessPage from "./pages/SuccessPage";
+import PrivateRoute from "./pages/PrivateRoute";
+import AuthProvider from "./contexts/AuthProvider";
 
 function App() {
   return (
     <Router>
         <div className="App">
-          <Routes>
-            <Route path="/" element={<Register />}>
-              <Route
+        <Routes>
+          <Route path="/" element={<Register />}>
+            <Route
                 path="signup"
                 element={
                   <Signup/>
@@ -32,14 +34,22 @@ function App() {
               >
                 <Route path="verify" element={<VerifyEmail />} />
                 <Route path="success" element={<SuccessPage />} />
-              </Route>
-              <Route path="login" element={<Login />} />
             </Route>
-            {/* <Route path="forgot_password" element={<ForgotPassword />}>
-            <Route path="reset_password" element={<ResetPassword />} />
-          </Route> */}
-            <Route path="dashboard" element={<Dashboard />} />
-          </Routes>
+            <Route path="login" element={
+              <AuthProvider>
+                <Login />
+              </AuthProvider>
+            } />
+            
+            <Route path="dashboard" element={
+              <AuthProvider>
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              </AuthProvider>
+            }/>
+          </Route>
+        </Routes>
         </div>
     </Router>
   );

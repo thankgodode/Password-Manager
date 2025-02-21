@@ -5,13 +5,14 @@ import { Link, useNavigate } from "react-router-dom";
 
 import API from "../utils/api"
 import axios from "axios"
+import { AuthContext } from "../contexts/AuthProvider";
 
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
   const [msg, setMsg] = useState("")
   const [err, setErr] = useState("")
-  const [userData, setUserData] = useState("")
+  const [profile, setProfile] = useState(AuthContext)
   
   const navigate = useNavigate()
 
@@ -20,9 +21,7 @@ export default function Login() {
     const checkAuth = async () => {
     try {
       const auth = await API.get("/dashboard")
-      console.log("Redirecting to dashboard...")
-
-      navigate("/dashboard")
+      setProfile(true)
     } catch (error) {
       console.log(error)
       return
