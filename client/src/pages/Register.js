@@ -10,10 +10,7 @@ import { useState } from "react";
 function Register() {
   const [user, setUser] = useState("");
   const [code, setCode] = useState("");
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [password, setPassword] = useState("")
-  const [email, setEmail] = useState("");
+  
   const [second,setSeconds] = useState("00")
   const [minute, setMinutes] = useState("03")
   const [timedout, setTimedout] = useState(true)
@@ -66,21 +63,8 @@ function Register() {
     <>
       <MyContext.Provider
         value={{
-          user,
-          setUser,
-          code,
-          setCode,
-          email,
-          setEmail,
           timeoutFunc,
           timedout,
-          firstName,
-          setFirstName,
-          lastName,
-          setLastName,
-          password,
-          setPassword,
-          email,
           minute,
           setMinutes,
           second,

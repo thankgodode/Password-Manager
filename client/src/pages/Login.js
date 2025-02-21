@@ -29,7 +29,7 @@ export default function Login() {
   }
       
   checkAuth()
-  }, [navigate])
+  }, [])
   
 
   const loginUser = async (e) => {

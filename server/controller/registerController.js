@@ -5,7 +5,7 @@ const { validateRegisterInput } = require("../validations/user.validation");
 const sendEmail = require("../services/email.services");
 
 const jwt = require("jsonwebtoken");
-const password = require("passport");
+const userDataModel = require("../model/userData.model");
 
 const tempUser = {};
 
@@ -21,45 +21,56 @@ const registerUser = async (req, res) => {
     return res.status(400).json({ message: error.details[0].message })
   }
 
-  let user = await User.findOne({ email: req.body.email });
+  let user = req.body;
+  let foundUser = await User.findOne({ email: user.email });
   
-  if (user && user.isVerified) {
+  if (foundUser && foundUser.isVerified) {
     return res
       .status(400)
       .json({ message: "User with given email already exists." });
   }
 
   try {
-    user = req.body
 
     const hashedPassword = await hashPassword(user.password);
     user.password = hashedPassword;
 
-    console.log("Hashed password", user.password);
-    
-    user = await User.create({ user })
+    if (!foundUser) {
+     foundUser = await User.create(user) 
+    }else if(foundUser && !foundUser.isVerified) {
+      foundUser = await User.findOneAndUpdate({ email: user.email }, {
+        name: user.name,
+        email: user.email,
+        password:user.password
+      }, { new: true })
+      
+    }
 
+    console.log("Hashed password", user.password);
     let token = await sendEmail(user.email);
 
-    user.token = token.token;
-
-    req.user = user;
+    foundUser.token = token.token;
+    const result = await foundUser.save()
 
     res
       .status(200)
-      .json({ msg: "A code has been sent to your email.", user:{...user}});
+      .json({ msg: "A code has been sent to your email.", token});
   } catch (error) {
-    return res.status(500).json({ msg: "Error while signing up user" });
+    return res.status(500).json({ msg: "Error while signing up user", error});
   }
 };
 
 const verifyUser = async (req, res) => {
-  const { token } = req.params;
-  const { user } = req.body;
+  const { email } = req.body;
   const { inputCode } = req.body
 
-  console.log("Req body", req.user)
+  const user = await User.findOne({ email })
 
+  if (!user) {
+    return res.status(403).json({msg:"User does not exist."})
+  }
+
+  const { token } = user;
   const verificationCode = jwt.verify(
     token,
     process.env.VERIFICATION_CODE,
@@ -76,7 +87,9 @@ const verifyUser = async (req, res) => {
   }
 
   if (verificationCode == inputCode) {
-    User.create({ ...user, isVerified: true });
+    user.isVerified = true;
+    const result = await user.save();
+  
     res.status(200).json({ msg: "Signup successfully!" });
   }
 }

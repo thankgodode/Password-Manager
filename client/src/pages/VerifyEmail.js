@@ -11,6 +11,7 @@ export default function VerifyEmail() {
   const [isPaste, setIsPaste] = useState(false)
   const [msg, setMsg] = useState("")
   const [error, setErr] = useState(false)
+  const [email, setEmail] = useState("")
 
   useEffect(() => {
     const email = localStorage.getItem("email")
@@ -23,13 +24,9 @@ export default function VerifyEmail() {
     minute,
     second,
     timeoutFunc,
-    email,
-    setEmail,
     timedout,
-    firstName,
-    lastName,
-    user,
-    password } = useContext(MyContext);
+    user
+  } = useContext(MyContext);
 
   const navigate = useNavigate();
 
@@ -70,26 +67,32 @@ export default function VerifyEmail() {
   };
 
   const verifyEmail = async () => {
-    console.log("User ", user)
-    const { token, name, password} = user;
     const email = localStorage.getItem("email");
 
     try {
-      const response = await axios.post(`http://localhost:5000/verify/${token}`, {
+      const response = await axios.post(`http://localhost:5000/verify`, {
         inputCode: isPaste ? inputCode : enterInput.join(""),
-        name,
-        password,
         email
       },
         {
           withCredentials: true 
           
-        });
+      });
       
       // setMsg(response.data.message)
       navigate("/signup/success");
 
     } catch (err) {
+      if (!err.response.data) {
+        setErr(true)
+        setMsg("Please reconnect to the internet :)")  
+
+        setTimeout(() => {
+          setErr(false)
+        }, 3000)
+
+      }
+
       console.log("Error ", err.response.data.msg);
       setErr(true)
       setMsg(err.response.data.msg)
@@ -102,17 +105,27 @@ export default function VerifyEmail() {
 
   const resendCode = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/register", {
-        name: `${firstName} ${lastName}`,
-        password: password,
-        email:email
-      })
-
+      const response = await axios.post("http://localhost:5000/send_code",
+        { email: email }, { withCredentials: true }
+      )
       setTimeout(() => {
         timeoutFunc()
       }, 1000)
       
     } catch (err) {
+      console.log(err)
+      if (!err.response) {
+        setMsg("Please reconnect to WIFI :)");
+
+        setTimeout(() => {
+          setErr(false)
+        }, 3000)
+      }
+
+      setTimeout(() => {
+          setErr(false)
+      }, 3000)
+      
       setMsg(err.response.data.message)
     }
   }
@@ -166,10 +179,9 @@ export default function VerifyEmail() {
             </strong>
           </p>
           <label>
-            Didn't get code? {timedout && <strong style={{cursor:"pointer"}} onClick={() => {
+            Didn't get code? {timedout && <span style={{cursor:"pointer"}} onClick={() => {
               resendCode()
-              
-            }}>Send code again.</strong>}
+            }}>Send code again.</span>}
           </label>
            {error && <h4 style={{color:"red"}}>{msg}</h4>}
           {/* <Link to="/forgot_password/reset_password"> */}

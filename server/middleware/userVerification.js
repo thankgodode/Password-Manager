@@ -14,7 +14,7 @@ const userVerification = async (req, res, next) => {
     token,
     process.env.ACCESS_TOKEN_SECRET,
     async (err, decoded) => {
-      console.log(err)
+      console.log("User verification middleware",err)
       if(err) return res.sendStatus(403)
       const user = await User.findOne({ email: decoded.email })
       

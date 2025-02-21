@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const User = require("../model/user.model")
 
 // const transporter = nodemailer.createTransport({
 //   host: "smtp.ethereal.email",
@@ -29,7 +30,7 @@ const getVerificationCode = () => {
 };
 
 async function sendEmail(email) {
-  const verificationCode = getVerificationCode();
+  const verificationCode = getVerificationCode()
 
   const token = jwt.sign(
     { code: verificationCode.code },
@@ -53,6 +54,9 @@ async function sendEmail(email) {
       console.log("Email sent: ", info.response);
     }
   });
+
+  console.log("email: ", email)
+  const user = await User.findOneAndUpdate({ email: email }, { token: token }, {new:true});
 
   return { code: verificationCode.code, token };
 }

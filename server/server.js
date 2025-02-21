@@ -48,8 +48,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // });
 
 app.use("/register", require("./routes/register"));
+app.use("/send_code", require("./routes/sendEmail"))
 app.use("/verify", require("./routes/verifyUser"));
 app.use("/login", require("./routes/login"))
+
 app.use("/refresh", require("./routes/refreshToken"))
 
 

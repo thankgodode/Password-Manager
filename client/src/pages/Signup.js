@@ -11,19 +11,14 @@ export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const [msg, setMsg] = useState("")
   const [err, setErr] = useState(false)
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("");
 
   const {
-    email,
-    setEmail,
     timeoutFunc,
-    firstName,
-    setFirstName,
-    lastName,
-    setLastName,
-    password,
-    setUser,
-    user,
-    setPassword } = useContext(MyContext)
+  } = useContext(MyContext)
 
   const navigate = useNavigate();
 
@@ -57,16 +52,16 @@ export default function Signup() {
         name: `${firstName} ${lastName}`,
         password: password,
         email: email,
-      });
+      },{withCredentials:true});
 
       localStorage.setItem("email", email)
-      setUser(response.data.user)
-
       navigate("/signup/verify");
-      timeoutFunc();
+      timeoutFunc()
 
       setIsLoading(false)      
     } catch (err) {
+      
+      console.log(err)
       if (!err.response) {
         setMsg("Please check your internet connection :)")
         setIsLoading(false)
@@ -79,7 +74,7 @@ export default function Signup() {
         return;
       }
 
-      console.log(err.response.data.message);
+      console.log(err.response);
       setIsLoading(false)      
       setErr(true)
       setMsg(err.response.data.message)
