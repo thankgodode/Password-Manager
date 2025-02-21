@@ -1,6 +1,6 @@
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import API from "../utils/api"
@@ -12,24 +12,9 @@ export default function Login() {
   const [loginPassword, setLoginPassword] = useState("")
   const [msg, setMsg] = useState("")
   const [err, setErr] = useState("")
-  const [profile, setProfile] = useState(AuthContext)
+  const { profile, setProfile, isAuthenticated, setIsAuthenticated } = useContext(AuthContext)
   
   const navigate = useNavigate()
-
-
-  useEffect(() => {
-    const checkAuth = async () => {
-    try {
-      const auth = await API.get("/dashboard")
-      setProfile(true)
-    } catch (error) {
-      console.log(error)
-      return
-    }
-  }
-      
-  checkAuth()
-  }, [])
   
 
   const loginUser = async (e) => {
@@ -53,6 +38,8 @@ export default function Login() {
       }, {
         withCredentials: true
       })
+
+      setIsAuthenticated(true)
       
       localStorage.setItem("token", response.data.token)
 

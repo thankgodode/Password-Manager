@@ -40,15 +40,14 @@ function App() {
                 <Login />
               </AuthProvider>
             } />
-            
-            <Route path="dashboard" element={
-              <AuthProvider>
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              </AuthProvider>
-            }/>
           </Route>
+          <Route path="dashboard" element={
+            <AuthProvider>
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            </AuthProvider>
+          }/>
         </Routes>
         </div>
     </Router>

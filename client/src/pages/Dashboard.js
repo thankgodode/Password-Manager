@@ -6,13 +6,32 @@ import AddPassword from "../components/AddPassword";
 import Setting from "../components/Setting";
 
 import { AuthContext } from "../contexts/AuthProvider";
+import API from "../utils/api";
 
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const [toggleModal, setToggleModal] = useState("");
-  const {isAuthenticated,setIsAuthenticated,profile,setProfile} = useState(AuthContext)
-
+  const { isAuthenticated, setIsAuthenticated, profile, setProfile } = useState(AuthContext)
+  
+    useEffect(() => {
+          console.log("Dashboard page...")
+          const checkAuth = async () => {
+              try {
+                  const auth = await API.get("/dashboard");
+                  console.log("User authorization successfully")
+  
+                  setIsAuthenticated(true)
+              } catch (error) {
+                  console.log(error)
+                  localStorage.removeItem("token")
+                  setIsAuthenticated(false)
+        }
+      }
+  
+          checkAuth()
+      }, [isAuthenticated])
+  
 
   function toggleSavedPassword() {
     setToggleModal("saved");
