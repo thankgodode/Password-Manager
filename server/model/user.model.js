@@ -26,11 +26,8 @@ const userSchema = new Schema({
     default: false,
   },
   verificationCode: {
-    code: { type: String },
-    expiry: { type: Date },
-  },
-  personalInfo: {
-    security_answer: { type: String },
+    type: String,
+    default:""
   },
   token: String,
 });

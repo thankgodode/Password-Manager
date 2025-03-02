@@ -5,20 +5,37 @@ import { Link, useNavigate } from "react-router-dom";
 
 import API from "../utils/api"
 import axios from "axios"
-import { AuthContext } from "../contexts/AuthProvider";
+import Preloader from "../components/Preloader";
 
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
   const [msg, setMsg] = useState("")
   const [err, setErr] = useState("")
-  const { profile, setProfile, isAuthenticated, setIsAuthenticated } = useContext(AuthContext)
+  const [isLoading, setIsLoading] = useState(true)
   
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const auth = await API.get("/dashboard");
+        setIsLoading(false)
+        navigate("/dashboard")
+      } catch (error) {
+        // console.log(error)
+        setIsLoading(false)
+        localStorage.removeItem("token")
+      }
+    }
   
+    checkAuth()
+  }, [])
 
   const loginUser = async (e) => {
     e.preventDefault()
+
+    setIsLoading(true)
 
     if (!loginEmail || !loginPassword) {
       setErr(true)
@@ -39,14 +56,15 @@ export default function Login() {
         withCredentials: true
       })
 
-      setIsAuthenticated(true)
-      
+      setIsLoading(false)
       localStorage.setItem("token", response.data.token)
 
       navigate("/dashboard")
     } catch (err) {
       setErr(true)
       
+      setIsLoading(false)
+
       if (err.response) {
         console.log(err.response.data.msg)     
         setMsg(err.response.data.msg)
@@ -59,13 +77,16 @@ export default function Login() {
 
       setTimeout(() => {
         setErr(false)
-      },3000)
+      }, 3000)
+      
+
     }
 
   }
 
   return (
     <>
+      {isLoading && <Preloader  />}
       <div className="wrap">
         <Link to="/">
           <div className="back_ico top">
@@ -73,7 +94,6 @@ export default function Login() {
           </div>
         </Link>
         <div className="figure">
-          {/* <button onClick={checkAuth}>Refresh</button> */}
           <div class="title">
             <h1>Login</h1>
             <div
@@ -115,7 +135,6 @@ export default function Login() {
                   style={{
                     fontSize: "0.9rem",
                     margin: "10px 0",
-
                     cursor: "pointer",
                   }}
                 >
@@ -123,9 +142,7 @@ export default function Login() {
                 </h4>
               </Link>
             </div>
-            {/* <Link to="/dashboard"> */}
-              <button className="createBtn st" onClick={loginUser}>Login</button>
-            {/* </Link> */}
+            <button className="createBtn st" onClick={loginUser}>Login</button>
           </form>
           {err && <h4 style={{color:"red",textAlign:"center"}}>{msg}</h4>}
           <div className="register_with">

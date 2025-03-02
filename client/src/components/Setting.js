@@ -1,22 +1,41 @@
 import back_icon from "../img/arrow.svg";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import {useState} from "react"
+
+import API from "../utils/api";
+import Preloader from "./Preloader";
 
 export default function Setting(props) {
-  const handleLogout = () => {
-    axios
-      .get("http://localhost:5000/logout", { withCredentials: true })
-      .then((response) => {
-        // setUser(null)
-        console.log(response);
-        window.location.href = "/signup";
-      })
-      .catch((err) => console.log("Error ", err));
+  const [msg, setMsg] = useState("")
+  const [err, setErr] = useState("")
+
+  const navigate = useNavigate()
+
+  const handleLogout = async (setIsLoading) => {
+    setIsLoading(true)
+    try {
+      setIsLoading(true)
+      const auth = await API.get("/logout",{withCredentials:true});
+      localStorage.removeItem("token")
+
+      setMsg("User successfully logged out!")
+      setIsLoading(false)
+      navigate("/login")
+
+    } catch (error) {
+      setIsLoading(false)
+      setMsg("Sorry an unexpected error occured, please try again :)")
+
+      setTimeout(() => {
+        setMsg("")
+      },3000)
+      console.log(error)
+    }
   };
 
   return (
     <>
-      <div className="back_ico top" onClick={() => props.setToggleModal("")}>
+      <div className="back_ico top" onClick={() => props.setToggleModal("dashboard")}>
         <img src={back_icon} alt="Back icon" />
       </div>
       <div className="figure setting_layout">
@@ -41,7 +60,7 @@ export default function Setting(props) {
             </div>
           </div>
           <Link>
-            <button className="logout" onClick={handleLogout}>
+            <button className="logout" onClick={() => handleLogout(props.setIsLoading)}>
               Logout
             </button>
           </Link>

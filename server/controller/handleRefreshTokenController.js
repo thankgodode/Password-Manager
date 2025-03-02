@@ -4,7 +4,6 @@ const {accessToken} = require("../utils/createJWT")
 
 const handleRefreshToken = (req, res) => {
     const token = req.cookies.token;
-    
     console.log("Refresh token: ", token)
       
     if (!token) {

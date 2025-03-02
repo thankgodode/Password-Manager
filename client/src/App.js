@@ -19,11 +19,13 @@ import VerifyEmail from "./pages/VerifyEmail";
 import SuccessPage from "./pages/SuccessPage";
 import PrivateRoute from "./pages/PrivateRoute";
 import AuthProvider from "./contexts/AuthProvider";
+import Preloader from "./components/Preloader";
 
 function App() {
   return (
     <Router>
-        <div className="App">
+      <div className="App">
+        {/* <Preloader/> */}
         <Routes>
           <Route path="/" element={<Register />}>
             <Route
@@ -35,18 +37,11 @@ function App() {
                 <Route path="verify" element={<VerifyEmail />} />
                 <Route path="success" element={<SuccessPage />} />
             </Route>
-            <Route path="login" element={
-              <AuthProvider>
-                <Login />
-              </AuthProvider>
-            } />
+            <Route path="login" element={<Login />} />
           </Route>
+          <Route path="forgot_password" element={<ForgotPassword/>}/>
           <Route path="dashboard" element={
-            <AuthProvider>
-              <PrivateRoute>
                 <Dashboard />
-              </PrivateRoute>
-            </AuthProvider>
           }/>
         </Routes>
         </div>

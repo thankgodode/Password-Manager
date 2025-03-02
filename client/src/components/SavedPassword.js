@@ -4,7 +4,7 @@ import search_icon from "../img/search.svg";
 export default function SavedPassword(props) {
   return (
     <>
-      <div className="back_ico top" onClick={() => props.setToggleModal("")}>
+      <div className="back_ico top" onClick={() => props.setToggleModal("dashboard")}>
         <img src={back_icon} alt="Back icon" />
       </div>
       <div className="search">

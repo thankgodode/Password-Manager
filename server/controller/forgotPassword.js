@@ -15,7 +15,7 @@ const forgotPassword = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res.json(500).json({ msg: "Account does not exist" });
+    return res.status(500).json({ msg: "Account does not exist" })
   }
 
   const token = await sendEmail(email);

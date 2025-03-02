@@ -10,4 +10,4 @@ const dashboard = (req, res) => {
 
 router.route("/").get(dashboard);
 
-module.exports = router;
+module.exports = router

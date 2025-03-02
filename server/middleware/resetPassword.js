@@ -4,7 +4,7 @@ const Token = require("../model/token.model");
 
 const resetPassword = async (req, res) => {
   const { id } = req.params;
-  const { pwd } = req.body;
+  const { password } = req.body;
 
   const user = await User.findOne({ _id: id });
   const tokenSchema = await Token.findOne({ userId: id });
@@ -12,7 +12,7 @@ const resetPassword = async (req, res) => {
   if (!user) {
     return res.sendStatus(400);
   }
-  user.password = await hashPassword(pwd);
+  user.password = await hashPassword(password);
   tokenSchema.token = "";
   const userResult = await user.save();
   const tokenResult = await tokenSchema.save();

@@ -9,29 +9,31 @@ import { AuthContext } from "../contexts/AuthProvider";
 import API from "../utils/api";
 
 import { useNavigate } from "react-router-dom";
+import Preloader from "../components/Preloader";
 
 export default function Dashboard() {
   const [toggleModal, setToggleModal] = useState("");
-  const { isAuthenticated, setIsAuthenticated, profile, setProfile } = useState(AuthContext)
-  
+  const [isLoading, setIsLoading] = useState(true)
+
+  const navigate = useNavigate()
+
     useEffect(() => {
-          console.log("Dashboard page...")
-          const checkAuth = async () => {
-              try {
-                  const auth = await API.get("/dashboard");
-                  console.log("User authorization successfully")
-  
-                  setIsAuthenticated(true)
-              } catch (error) {
-                  console.log(error)
-                  localStorage.removeItem("token")
-                  setIsAuthenticated(false)
+        console.log("Dashboard page...")
+        const checkAuth = async () => {
+          try {
+            const auth = await API.get("/dashboard");
+            setToggleModal("dashboard")
+            setIsLoading(false)
+            console.log("User authorization successfully")
+          } catch (error) {
+            console.log(error)
+            localStorage.removeItem("token")
+            navigate("/login")  
+          }
         }
-      }
   
-          checkAuth()
-      }, [isAuthenticated])
-  
+      checkAuth()
+    }, [navigate])
 
   function toggleSavedPassword() {
     setToggleModal("saved");
@@ -52,52 +54,57 @@ export default function Dashboard() {
 
   return (
     <>
+      {isLoading && <Preloader/>}
       {toggleModal == "add" || toggleModal == "generate" ? (
         <div className="modal"></div>
       ) : (
         ""
       )}
-      {toggleModal == "saved" || toggleModal == "setting" ? (
-        <div className="white_layout"></div>
+      {/* {toggleModal == "saved" || toggleModal == "setting" ? (
+        <div className="white_layout" style={{position:"relative"}}></div>
       ) : (
         ""
-      )}
+      )} */}
       <div className="wrap">
-        <div className="header top">
-          <div className="name nav">
-            <h3>TO</h3>
-          </div>
-          <div className="settings nav" onClick={openSetting}>
-            <img src={setting_ico} alt="setting" />
-          </div>
-        </div>
-        <div className="figure dashboard">
-          <div style={{ margin: "30px 0 0 0" }}>
-            <button className="save password" onClick={toggleSavedPassword}>
-              Save Password
-            </button>
-            <button
-              className="generate password"
-              onClick={toggleGeneratePassword}
-            >
-              Generate Password
-            </button>
-            <button className="add password" onClick={toggleAddPassword}>
-              Add Password
-            </button>
-          </div>
-        </div>
+        {toggleModal == "dashboard" &&
+          <>
+            <div className="header top">
+              <div className="name nav">
+                <h3>TO</h3>
+              </div>
+              <div className="settings nav" onClick={openSetting}>
+                <img src={setting_ico} alt="setting" />
+              </div>
+            </div>
+            <div className="figure dashboard">
+              <div style={{ margin: "30px 0 0 0" }}>
+                <button className="save password" onClick={toggleSavedPassword}>
+                  Save Password
+                </button>
+                <button
+                  className="generate password"
+                  onClick={toggleGeneratePassword}
+                >
+                  Generate Password
+                </button>
+                <button className="add password" onClick={toggleAddPassword}>
+                  Add Password
+                </button>
+              </div>
+            </div>
+          </>
+        }
         {toggleModal == "saved" && (
           <SavedPassword setToggleModal={setToggleModal} />
         )}
         {toggleModal == "generate" && (
-          <GeneratePassword setToggleModal={setToggleModal} />
+          <GeneratePassword setToggleModal={setToggleModal} isLoading={isLoading} setIsLoading={setIsLoading} />
         )}
         {toggleModal == "add" && (
-          <AddPassword setToggleModal={setToggleModal} />
+          <AddPassword setToggleModal={setToggleModal} isLoading={isLoading} setIsLoading={setIsLoading} />
         )}
         {toggleModal == "setting" && (
-          <Setting setToggleModal={setToggleModal} />
+          <Setting setToggleModal={setToggleModal} isLoading={isLoading} setIsLoading={setIsLoading} />
         )}
       </div>
     </>

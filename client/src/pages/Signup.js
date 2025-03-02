@@ -6,6 +6,9 @@ import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import Preloader from "../components/Preloader";
+import VerifyEmail from "./VerifyEmail";
+import SuccessPage from "./SuccessPage"
 
 export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,12 +18,11 @@ export default function Signup() {
   const [lastName, setLastName] = useState("")
   const [password, setPassword] = useState("")
   const [email, setEmail] = useState("");
+  const [toggle, setToggle] = useState("signup")
 
   const {
     timeoutFunc,
   } = useContext(MyContext)
-
-  const navigate = useNavigate();
 
   const handleFirstName = (e) => {
     setFirstName(e.target.value);
@@ -55,7 +57,7 @@ export default function Signup() {
       },{withCredentials:true});
 
       localStorage.setItem("email", email)
-      navigate("/signup/verify");
+      setToggle("verify")
       timeoutFunc()
 
       setIsLoading(false)      
@@ -85,15 +87,32 @@ export default function Signup() {
     }
   };
 
-  const location = useLocation();
-
-  const hideLayoutRoute = ["/signup", "/verify", "/success"];
-  const shoudHideLayout = hideLayoutRoute.includes(location.pathname);
-
   return (
     <>
-      {shoudHideLayout && (
-        <div className="wrap">
+      {isLoading && <Preloader/>}
+      {toggle == "signup" && <SignupUI
+        signup={signup}
+        handleFirstNam={handleFirstName}
+        handleLastName={handleLastName}
+        handleEmail={handleEmail}
+        handlePassword={handlePassword}
+        err={err}
+        msg={msg}
+      />}
+      {toggle == "verify" &&
+      <VerifyEmail
+        toggle={toggle}
+        setToggle={setToggle}
+        email={email}
+        />
+      }
+    </>
+  );
+}
+
+function SignupUI(props) {
+  return (
+    <div className="wrap">
           <Link to="/">
             <div className="back_ico">
               <img src={back_icon} alt="Back icon" className="back" />
@@ -101,7 +120,6 @@ export default function Signup() {
           </Link>
           <div className="figure">
             <div class="title">
-              {isLoading && <Overlay />}
               <h1>Create account</h1>
               <div
                 style={{
@@ -121,30 +139,30 @@ export default function Signup() {
                 type="text"
                 className="first_name st"
                 placeholder="First name"
-                onChange={handleFirstName}
+                onChange={props.handleFirstName}
               />
               <input
                 type="text"
                 className="last_name st"
                 placeholder="Lastname name"
-                onChange={handleLastName}
+                onChange={props.handleLastName}
               />
               <input
                 type="email"
                 className="email st"
                 placeholder="Email"
-                onChange={handleEmail}
+                onChange={props.handleEmail}
               />
               <input
                 type="password"
                 className="password st"
                 placeholder="Password"
-                onChange={handlePassword}
+                onChange={props.handlePassword}
               />
-              <button className="createBtn st" onClick={signup}>
+              <button className="createBtn st" onClick={props.signup}>
                 Create account
               </button>
-              {err && <h4 style={{color:"red", textAlign:"center"}}>{msg}</h4>}
+              {props.err && <h4 style={{ color: "red", textAlign: "center" }}>{props.msg}</h4>}
             </form>
             <div className="register_with">
               <span></span>
@@ -158,28 +176,5 @@ export default function Signup() {
             </div>
           </div>
         </div>
-      )}
-      <Outlet />
-    </>
-  );
-}
-
-function Overlay() {
-  const styles = {
-    height: "100vh",
-  };
-
-  return (
-    <div
-      className="modal"
-      style={{
-        height: "100vh",
-        width: "100%",
-        background: "grey",
-        position: "fixed",
-      }}
-    >
-      Loading...
-    </div>
-  );
+  )
 }

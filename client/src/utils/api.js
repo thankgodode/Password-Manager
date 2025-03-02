@@ -42,6 +42,7 @@ API.interceptors.request.use(async (config) => {
 API.interceptors.response.use(
     (response) => response,
     async (error) => {
+        console.log("Interceptor error: ", error)
         if (error.response.status === 403) {
             try {
                 const res = await axios.get("http://localhost:5000/refresh", { withCredentials: true });

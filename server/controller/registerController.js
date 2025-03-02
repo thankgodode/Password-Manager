@@ -49,7 +49,7 @@ const registerUser = async (req, res) => {
     console.log("Hashed password", user.password);
     let token = await sendEmail(user.email);
 
-    foundUser.token = token.token;
+    foundUser.verificationCode = token.token;
     const result = await foundUser.save()
 
     res
@@ -70,9 +70,9 @@ const verifyUser = async (req, res) => {
     return res.status(403).json({msg:"User does not exist."})
   }
 
-  const { token } = user;
-  const verificationCode = jwt.verify(
-    token,
+  const { verificationCode } = user;
+  const verifyCode = jwt.verify(
+    verificationCode,
     process.env.VERIFICATION_CODE,
     (err, decoded) => {
       if (err) return;
@@ -80,13 +80,13 @@ const verifyUser = async (req, res) => {
     }
   );
 
-  console.log("VV ", verificationCode, inputCode)
+  console.log("VV ", verifyCode, inputCode)
 
-  if (verificationCode !== inputCode) {
+  if (verifyCode !== inputCode) {
     res.status(401).json({ msg: "Incorrect or expired value entered." });
   }
 
-  if (verificationCode == inputCode) {
+  if (verifyCode == inputCode) {
     user.isVerified = true;
     const result = await user.save();
   
