@@ -1,7 +1,7 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const User = require("../model/user.model");
-const createJWT = require("../utils/createJWT");
+const {refreshToken, accessToken} = require("../utils/createJWT");
 const { comparePassword } = require("../utils/passwordUtil");
 
 const { validateLoginInput } = require("../validations/user.validation");
@@ -16,8 +16,8 @@ const loginUser = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user) {
-      res.status(400).json({ msg: "Incorrect email or password provided" });
+    if (!user || !user.isVerified) {
+      return res.status(400).json({ msg: "Incorrect email or password provided" });
     }
 
     const match = await comparePassword(password, user.password);
@@ -27,18 +27,23 @@ const loginUser = async (req, res) => {
         .json({ msg: "Incorrect email or password provided" });
     }
 
-    const token = createJWT(user.email);
-    user.token = token;
+    const rToken = refreshToken(user.email);
+    const aToken = accessToken(user.email);
+    
+    user.token = rToken;
     const result = await user.save();
 
-    res.cookie("token", token, {
+    res.cookie("token", rToken, {
       withCredentials: true,
-      httpOnly: false,
-    });
+      httpOnly: true,
+      sameSite: "Lax",
+      // secure: true,
+      // maxAge:24*60*60*1000
+    })
 
-    res.status(201).json({ msg: "Successfully logged in user!" });
+    res.status(201).json({ msg: "Successfully logged in user!", token:aToken, user });
   } catch (err) {
-    res.sendStatus(401);
+    res.status(401).json({msg:err})
   }
 };
 

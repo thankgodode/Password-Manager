@@ -64,7 +64,7 @@ export default function GeneratePassword(props) {
           />
           <button
             className="close_p cancel"
-            onClick={() => props.setToggleModal("")}
+            onClick={() => props.setToggleModal("dashboard")}
           >
             Close
           </button>

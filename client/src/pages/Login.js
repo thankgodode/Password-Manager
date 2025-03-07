@@ -1,38 +1,120 @@
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import axios from "react"
+import API from "../utils/api"
+import axios from "axios"
+import Preloader from "../components/Preloader";
+import { MyContext } from "../contexts/FeaturesProvider";
 
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
-  const [msg, setMsg] = useState("")
-  const [err, setErr] = useState("")
 
+  const {
+    msg,
+    setMsg,
+    error,
+    setError,
+    isLoading,
+    setIsLoading,
+    setProfileName
+
+  } = useContext(MyContext)
+  
   const navigate = useNavigate()
+
+  useEffect(() => {
+    setIsLoading(true)
+
+    const checkAuth = async () => {
+      try {
+        const auth = await API.get("/dashboard");
+        setIsLoading(false)
+        navigate("/dashboard")
+      } catch (error) {
+        // console.log(error)
+        setIsLoading(false)
+        localStorage.removeItem("token")
+      }
+    }
+  
+    checkAuth()
+  }, [])
 
   const loginUser = async (e) => {
     e.preventDefault()
+
+    setIsLoading(true)
+
+    if (!loginEmail || !loginPassword) {
+      setError(true)
+      setMsg("Input field(s) cannot be left blank :)")
+      setIsLoading(false)
+
+      setTimeout(() => {
+        setError(false)
+      }, 3000)
+      
+      return
+    }
 
     try {
       const response = await axios.post("http://localhost:5000/login", {
         email: loginEmail,
         password: loginPassword
+      }, {
+        withCredentials: true
       })
-      
+
+      setIsLoading(false)
+      console.log(response)
+      // abbreviateName()
+
+      localStorage.setItem("token", response.data.token)
+
       navigate("/dashboard")
     } catch (err) {
-      console.log(err.response.data.msg)     
-      setErr(true)
+      setError(true)
+      setIsLoading(false)
+
+      console.log(err)
+
+      if (!err.response || err.response.data.msg) {
+        setMsg("Please check your internet connection :)")
+
+        setTimeout(() => {
+          setMsg("")
+        }, 3000)
+        
+        return
+      }
       setMsg(err.response.data.msg)
+
+      setTimeout(() => {
+        setError(false)
+      }, 3000)
+      
+
     }
 
   }
 
+  const abbreviateName = (name) => {
+    let a = ""
+    name.split(" ").forEach((el, i) => {
+      a+=el[0].length > 0  ? el[0] : ""
+    })
+
+    setProfileName(a)
+  }
+
+
+
   return (
     <>
+      {isLoading && <Preloader  />}
       <div className="wrap">
         <Link to="/">
           <div className="back_ico top">
@@ -56,11 +138,17 @@ export default function Login() {
             </div>
           </div>
           <form className="form">
-            <input type="email" className="email st" placeholder="Email" />
+            <input
+              type="email"
+              className="email st"
+              placeholder="Email"
+              onInput={(e) => setLoginEmail(e.target.value)}
+            />
             <input
               type="password"
               className="password st"
               placeholder="Password"
+              onInput={(e) => setLoginPassword(e.target.value)}
             />
             <div
               style={{
@@ -75,7 +163,6 @@ export default function Login() {
                   style={{
                     fontSize: "0.9rem",
                     margin: "10px 0",
-
                     cursor: "pointer",
                   }}
                 >
@@ -83,10 +170,9 @@ export default function Login() {
                 </h4>
               </Link>
             </div>
-            <Link to="/dashboard">
-              <button className="createBtn st" onClick={loginUser}>Login</button>
-            </Link>
+            <button className="createBtn st" onClick={loginUser}>Login</button>
           </form>
+          {error && <h4 style={{color:"red",textAlign:"center"}}>{msg}</h4>}
           <div className="register_with">
             <span></span>
             <label>Or login with</label>

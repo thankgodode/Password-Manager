@@ -27,7 +27,7 @@ export default function AddPassword(props) {
             <button className="save_p proceed">Add</button>
             <button
               className="close_p cancel"
-              onClick={() => props.setToggleModal("")}
+              onClick={() => props.setToggleModal("dashboard")}
             >
               Close
             </button>

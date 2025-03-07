@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
 
+const authRoute = require("./middleware/userVerification")
+
 const cors = require("cors");
 const connectDB = require("./db/connectDB");
 
@@ -46,13 +48,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // });
 
 app.use("/register", require("./routes/register"));
+app.use("/send_code", require("./routes/sendEmail"))
 app.use("/verify", require("./routes/verifyUser"));
-app.use("/login", require("./routes/login"));
+app.use("/login", require("./routes/login"))
+
+app.use("/refresh", require("./routes/refreshToken"))
+
+
 app.use("/logout", require("./routes/logout"));
 app.use("/forgot-password", require("./routes/forgotPassword"));
 
-app.use(require("./middleware/userVerification"));
-app.use("/dashboard", require("./routes/dashboard"));
+
+// app.use(require("./middleware/userVerification"))
+app.use("/dashboard", require("./middleware/userVerification"), require("./routes/dashboard"))
 app.use("/dashboard", require("./routes/userData"));
 
 app.get("/", (req, res) => {

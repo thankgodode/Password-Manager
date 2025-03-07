@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import check_ico from "../img/complete.svg";
 import back_icon from "../img/arrow.svg";
 
-export default function SuccessPage() {
+export default function SuccessPage(props) {
   return (
     <>
       <div className="wrap">
@@ -19,7 +19,7 @@ export default function SuccessPage() {
             style={{ width: "350px" }}
           />
           <h1 style={{ color: "green", textAlign: "center" }}>
-            Successfully created account!
+            {props.msg}
           </h1>
         </content>
       </div>

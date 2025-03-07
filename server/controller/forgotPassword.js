@@ -15,21 +15,22 @@ const forgotPassword = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    return res.json(500).json({ msg: "Account does not exist" });
+    return res.status(500).json({ msg: "Account does not exist" })
   }
 
   const token = await sendEmail(email);
-  console.log("Token ", token)
+  user.token = token.token
+  const result = await user.save()
   
-  var tokenSchema = await Token.findOne({ userId: user._id });
+  // var tokenSchema = await Token.findOne({ userId: user._id });
 
-  if (!tokenSchema) {
-    tokenSchema = await Token.create({ userId: user._id, token: token.token});
-  }
+  // if (!tokenSchema) {
+  //   tokenSchema = await Token.create({ userId: user._id, token: token.token});
+  // }
 
-  tokenSchema.token = token.token
+  // tokenSchema.token = token.token
   
-  const result = await tokenSchema.save();
+  // const result = await tokenSchema.save();
   res.status(200).json({ msg: "A code has been sent to your email", user });
 }
 
@@ -37,10 +38,11 @@ const verifyCode = async (req, res) => {
   const { id } = req.params
   const { inputCode } = req.body;
 
-  const tokenSchema = await Token.findOne({ userId: id });
+  // const tokenSchema = await Token.findOne({ userId: id });
+  const user = await User.findOne({_id:id})
 
   const verificationCode = await jwt.verify(
-    tokenSchema.token,
+    user.token,
     process.env.VERIFICATION_CODE,
     (err, decoded) => {
       if (err) return;

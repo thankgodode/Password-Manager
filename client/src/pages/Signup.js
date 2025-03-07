@@ -1,29 +1,39 @@
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
-import MyContext from "../contexts/MyContext";
+import {MyContext} from "../contexts/FeaturesProvider";
 
 import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import Preloader from "../components/Preloader";
+import VerifyEmail from "./VerifyEmail";
+import SuccessPage from "./SuccessPage"
 
 export default function Signup() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [msg, setMsg] = useState("")
-  const [err, setErr] = useState(false)
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [password, setPassword] = useState("")
 
-  const {
+   const {
+    isLoading,
+    setIsLoading,
+    msg,
+    setMsg,
+    error,
+    setError,
     email,
     setEmail,
-    timeoutFunc,
-    firstName,
-    setFirstName,
-    lastName,
-    setLastName,
-    password,
-    setPassword } = useContext(MyContext)
+    toggle, 
+     setToggle,
+    timeoutFunc
+  } = useContext(MyContext)
 
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    setIsLoading(false)
+    setToggle("signup")
+  },[])
 
   const handleFirstName = (e) => {
     setFirstName(e.target.value);
@@ -49,40 +59,70 @@ export default function Signup() {
     e.preventDefault();
     setIsLoading(true);
 
-    localStorage.setItem("email", {email})
-
     try {
       const response = await axios.post("http://localhost:5000/register", {
         name: `${firstName} ${lastName}`,
         password: password,
         email: email,
+      },
+        {
+          withCredentials: true 
       });
 
-      navigate("/signup/verify");
-      timeoutFunc();
+      setToggle("verify")
+      timeoutFunc()
 
       setIsLoading(false)      
     } catch (err) {
-      console.log(err.response.data.message);
+      
+      if (!err.response) {
+        setMsg("Please check your internet connection :)")
+        setIsLoading(false)
+
+        setError(true)
+        setTimeout(() => {
+          setError(false)
+        }, 3000)
+        
+        return;
+      }
+
       setIsLoading(false)      
-      setErr(true)
+      setError(true)
       setMsg(err.response.data.message)
 
       setTimeout(() => {
-        setErr(false)
+        setError(false)
       }, 3000)
     }
   };
 
-  const location = useLocation();
-
-  const hideLayoutRoute = ["/signup", "/verify", "/success"];
-  const shoudHideLayout = hideLayoutRoute.includes(location.pathname);
-
   return (
     <>
-      {shoudHideLayout && (
-        <div className="wrap">
+      {isLoading && <Preloader/>}
+      {toggle == "signup" && <SignupUI
+        signup={signup}
+        handleFirstName={handleFirstName}
+        handleLastName={handleLastName}
+        handleEmail={handleEmail}
+        handlePassword={handlePassword}
+        err={error}
+        msg={msg}
+      />}
+      {toggle == "verify" &&
+      <VerifyEmail
+        email={email}
+        verifyMail={true}
+        />
+      }
+      {toggle == "success" && <SuccessPage msg={msg} />}
+    </>
+  );
+}
+
+function SignupUI(props) {
+  return (
+    <div className="wrap">
           <Link to="/">
             <div className="back_ico">
               <img src={back_icon} alt="Back icon" className="back" />
@@ -90,7 +130,6 @@ export default function Signup() {
           </Link>
           <div className="figure">
             <div class="title">
-              {isLoading && <Overlay />}
               <h1>Create account</h1>
               <div
                 style={{
@@ -110,30 +149,30 @@ export default function Signup() {
                 type="text"
                 className="first_name st"
                 placeholder="First name"
-                onChange={handleFirstName}
+                onChange={props.handleFirstName}
               />
               <input
                 type="text"
                 className="last_name st"
                 placeholder="Lastname name"
-                onChange={handleLastName}
+                onChange={props.handleLastName}
               />
               <input
                 type="email"
                 className="email st"
                 placeholder="Email"
-                onChange={handleEmail}
+                onChange={props.handleEmail}
               />
               <input
                 type="password"
                 className="password st"
                 placeholder="Password"
-                onChange={handlePassword}
+                onChange={props.handlePassword}
               />
-              <button className="createBtn st" onClick={signup}>
+              <button className="createBtn st" onClick={props.signup}>
                 Create account
               </button>
-              {err && <h4 style={{color:"red", textAlign:"center"}}>{msg}</h4>}
+              {props.err && <h4 style={{ color: "red", textAlign: "center" }}>{props.msg}</h4>}
             </form>
             <div className="register_with">
               <span></span>
@@ -147,28 +186,5 @@ export default function Signup() {
             </div>
           </div>
         </div>
-      )}
-      <Outlet />
-    </>
-  );
-}
-
-function Overlay() {
-  const styles = {
-    height: "100vh",
-  };
-
-  return (
-    <div
-      className="modal"
-      style={{
-        height: "100vh",
-        width: "100%",
-        background: "grey",
-        position: "fixed",
-      }}
-    >
-      Loading...
-    </div>
-  );
+  )
 }
