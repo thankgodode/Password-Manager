@@ -5,7 +5,7 @@ import SavedPassword from "../components/SavedPassword";
 import AddPassword from "../components/AddPassword";
 import Setting from "../components/Setting";
 
-import { AuthContext } from "../contexts/AuthProvider";
+import { MyContext } from "../contexts/FeaturesProvider";
 import API from "../utils/api";
 
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,7 @@ import Preloader from "../components/Preloader";
 export default function Dashboard() {
   const [toggleModal, setToggleModal] = useState("");
   const [isLoading, setIsLoading] = useState(true)
+  const [profileName, setProfileName] = useState("")
 
   const navigate = useNavigate()
 
@@ -22,6 +23,8 @@ export default function Dashboard() {
         const checkAuth = async () => {
           try {
             const auth = await API.get("/dashboard");
+            setProfileName(auth.data.user.name)
+
             setToggleModal("dashboard")
             setIsLoading(false)
             console.log("User authorization successfully")
@@ -34,7 +37,7 @@ export default function Dashboard() {
   
       checkAuth()
     }, [navigate])
-
+  
   function toggleSavedPassword() {
     setToggleModal("saved");
   }
@@ -69,8 +72,8 @@ export default function Dashboard() {
         {toggleModal == "dashboard" &&
           <>
             <div className="header top">
-              <div className="name nav">
-                <h3>TO</h3>
+              <div className="name nav" style={{display:"flex",justifyContent:"center", alignItems:"center"}}>
+              <h3>{profileName.split(" ").map((word) => word.charAt(0).toUpperCase()).join("")}</h3>
               </div>
               <div className="settings nav" onClick={openSetting}>
                 <img src={setting_ico} alt="setting" />

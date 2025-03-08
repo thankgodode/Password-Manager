@@ -1,30 +1,29 @@
 import back_icon from "../img/arrow.svg";
-import MyContext from "../contexts/MyContext";
+import {MyContext} from "../contexts/FeaturesProvider";
 
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import SuccessPage from "./SuccessPage";
 import Preloader from "../components/Preloader";
-import UserInfoContext from "../contexts/UserInfoContext";
 
 export default function VerifyEmail(props) {
   const [inputCode, setInputCode] = useState("");
   const [enterInput, setEnterInput] = useState([])
   const [isPaste, setIsPaste] = useState(false)
-  const [msg, setMsg] = useState("")
-  const [error, setErr] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  
-  const {email, userId, toggle, setToggle} = useContext(UserInfoContext)
-
-  
+  const [error, setError] = useState("")
+    
   const {
     minute,
     second,
     timeoutFunc,
     timedout,
-    user
+    clearTimeout,
+    setToggle,
+    setIsLoading,
+    email,
+    msg,
+    setMsg,
   } = useContext(MyContext);
 
   const pasteCode = (e) => {
@@ -63,8 +62,8 @@ export default function VerifyEmail(props) {
   };
 
   const verifyEmail = async (email) => {
-    
     setIsLoading(true)
+    
     try {
       const response = await axios.post(`http://localhost:5000/verify`, {
         inputCode: isPaste ? inputCode : enterInput.join(""),
@@ -72,35 +71,37 @@ export default function VerifyEmail(props) {
       },
         {
           withCredentials: true
-          
         });
 
       setToggle("success")
+      setMsg("Account successfully created!")
       setIsLoading(false)
+      clearTimeout()
     } catch (err) {
       if (!err.response.data) {
-        setErr(true)
+        setError(true)
         setMsg("Please reconnect to the internet :)")
 
         setTimeout(() => {
-          setErr(false)
+          setError(false)
         }, 3000)
       }
 
       console.log("Error ", err.response.data.msg);
-      setErr(true)
+      setError(true)
       setMsg(err.response.data.msg)
 
       setTimeout(() => {
-        setErr(false)
+        setError(false)
       }, 3000)
       
       setIsLoading(false)
     }
   };
 
-  const verifyResetEmail = async (id) => {
+  const verifyResetPassword = async (id) => {
     setIsLoading(true)
+    
     try {
       const response = await axios.post(`http://localhost:5000/forgot-password/verify/${id}`, {
         inputCode: isPaste ? inputCode : enterInput.join(""),
@@ -111,23 +112,26 @@ export default function VerifyEmail(props) {
 
       setToggle("reset")
       setIsLoading(false)
+      clearTimeout()
     } catch (err) {
       console.log(err)
       
       if (!err.response) {
-        setErr(true)
+        setError(true)
         setMsg("Please reconnect to the internet :)")
 
         setTimeout(() => {
-          setErr(false)
+          setError(false)
         }, 3000)
+
+        return
       }
 
-      setErr(true)
+      setError(true)
       setMsg(err.response.data.msg)
 
       setTimeout(() => {
-        setErr(false)
+        setError(false)
       }, 3000)
       
       setIsLoading(false)
@@ -143,18 +147,19 @@ export default function VerifyEmail(props) {
         timeoutFunc()
       }, 1000)
       
+      setMsg("A code has been sent to your email!")
     } catch (err) {
       console.log(err)
       if (!err.response) {
         setMsg("Please reconnect to WIFI :)");
 
         setTimeout(() => {
-          setErr(false)
+          setError(false)
         }, 3000)
       }
 
       setTimeout(() => {
-          setErr(false)
+          setError(false)
       }, 3000)
       
       setMsg(err.response.data.message)
@@ -169,7 +174,6 @@ export default function VerifyEmail(props) {
 
   return (
     <>
-      {isLoading && <Preloader/>}
         <div className="wrap" onInput={deleteCode} onPaste={pasteCode}>
           <div className="back_ico top" onClick={navigateBack}>
             <img src={back_icon} alt="Back icon" />
@@ -205,21 +209,20 @@ export default function VerifyEmail(props) {
               </strong>
             </p>
             <label>
-              Didn't get code? {timedout && <span style={{ cursor: "pointer" }} onClick={() => {
+            Didn't get code? {timedout && <span style={{ cursor: "pointer" }}
+              onClick={() => {
                 resendCode(email)
               }}>Send code again.</span>}
             </label>
             {error && <h4 style={{ color: "red" }}>{msg}</h4>}
-            {props.verifyMail && <button className="verify_btn st" onClick={() => props.verifyEmail(email)}>
+            {props.verifyMail && <button className="verify_btn st" onClick={() => verifyEmail(email)}>
               Verify email address
             </button>}
-
-            {props.verifyReset && <button className="verify_btn st" onClick={() => verifyResetEmail(userId)}>
+            {props.verifyReset && <button className="verify_btn st" onClick={() => verifyResetPassword(props.userId)}>
               Verify email address
             </button>}
           </div>
         </div>
-      {toggle == "success" && <SuccessPage />}
     </>
   );
 }

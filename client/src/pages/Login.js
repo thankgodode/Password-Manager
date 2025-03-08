@@ -6,17 +6,28 @@ import { Link, useNavigate } from "react-router-dom";
 import API from "../utils/api"
 import axios from "axios"
 import Preloader from "../components/Preloader";
+import { MyContext } from "../contexts/FeaturesProvider";
 
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
-  const [msg, setMsg] = useState("")
-  const [err, setErr] = useState("")
-  const [isLoading, setIsLoading] = useState(true)
+
+  const {
+    msg,
+    setMsg,
+    error,
+    setError,
+    isLoading,
+    setIsLoading,
+    setProfileName
+
+  } = useContext(MyContext)
   
   const navigate = useNavigate()
 
   useEffect(() => {
+    setIsLoading(true)
+
     const checkAuth = async () => {
       try {
         const auth = await API.get("/dashboard");
@@ -38,11 +49,12 @@ export default function Login() {
     setIsLoading(true)
 
     if (!loginEmail || !loginPassword) {
-      setErr(true)
+      setError(true)
       setMsg("Input field(s) cannot be left blank :)")
+      setIsLoading(false)
 
       setTimeout(() => {
-        setErr(false)
+        setError(false)
       }, 3000)
       
       return
@@ -57,32 +69,48 @@ export default function Login() {
       })
 
       setIsLoading(false)
+      console.log(response)
+      // abbreviateName()
+
       localStorage.setItem("token", response.data.token)
 
       navigate("/dashboard")
     } catch (err) {
-      setErr(true)
-      
+      setError(true)
       setIsLoading(false)
 
-      if (err.response) {
-        console.log(err.response.data.msg)     
-        setMsg(err.response.data.msg)
-      
-      } else {
-        console.log(err)     
-        setMsg("Please check your internet connection :)")
-      }
+      console.log(err)
 
+      if (!err.response || err.response.data.msg) {
+        setMsg("Please check your internet connection :)")
+
+        setTimeout(() => {
+          setMsg("")
+        }, 3000)
+        
+        return
+      }
+      setMsg(err.response.data.msg)
 
       setTimeout(() => {
-        setErr(false)
+        setError(false)
       }, 3000)
       
 
     }
 
   }
+
+  const abbreviateName = (name) => {
+    let a = ""
+    name.split(" ").forEach((el, i) => {
+      a+=el[0].length > 0  ? el[0] : ""
+    })
+
+    setProfileName(a)
+  }
+
+
 
   return (
     <>
@@ -144,7 +172,7 @@ export default function Login() {
             </div>
             <button className="createBtn st" onClick={loginUser}>Login</button>
           </form>
-          {err && <h4 style={{color:"red",textAlign:"center"}}>{msg}</h4>}
+          {error && <h4 style={{color:"red",textAlign:"center"}}>{msg}</h4>}
           <div className="register_with">
             <span></span>
             <label>Or login with</label>

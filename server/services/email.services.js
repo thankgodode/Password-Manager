@@ -55,10 +55,9 @@ async function sendEmail(email) {
     }
   });
 
-  console.log("email: ", email)
   const user = await User.findOneAndUpdate({ email: email }, { token: token }, {new:true});
 
-  return { code: verificationCode.code, token };
+  return { token };
 }
 
 module.exports = sendEmail;

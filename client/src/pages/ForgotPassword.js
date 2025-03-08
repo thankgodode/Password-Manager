@@ -2,24 +2,50 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import back_icon from "../img/arrow.svg";
 import API from "../utils/api";
 
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import Preloader from "../components/Preloader";
 import VerifyEmail from "./VerifyEmail";
 import ResetPassword from "./ResetPassword";
-import UserInfoContext from "../contexts/UserInfoContext";
+import SuccessPage from "./SuccessPage";
+import { MyContext } from "../contexts/FeaturesProvider";
+
+
 
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [toggle, setToggle] = useState('forgot-password')
   const [userId, setUserId] = useState("")
   const [msg, setMsg] = useState("")
+
+
+  useEffect(() => {
+    setToggle('forgot-password')
+  },[])
+
+  const {
+    email, 
+    setEmail,
+    timeoutFunc,
+    isLoading,
+    setIsLoading,
+    toggle,
+    setToggle
+  } = useContext(MyContext)
+
 
   const sendCode = async (e) => {
     e.preventDefault()
 
+    if (email.length < 1) {
+      setMsg("Input field cannot be left blank :)")
+
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
+      return
+    }
+
+    
     setIsLoading(true)
     try {
       const send = await API.post("http://localhost:5000/forgot-password", {
@@ -27,25 +53,48 @@ export default function ForgotPassword() {
       },
         { withCredentials: true }
       )
-      
+
       console.log(send)
       setUserId(send.data.user._id)
 
       setToggle("verify")
       setIsLoading(false)
+      timeoutFunc()
     } catch (error) {
       console.log(error)
       setIsLoading(false)
+
+      if (!error.response) {
+        setMsg("Please check your internet connection :)")
+
+        setTimeout(() => {
+          setMsg("")
+        }, 3000)
+        return
+      }
+      
+      setMsg(error.response.data.msg)
+
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
     }
   }
 
   return (
     <>
-      <UserInfoContext.Provider value={{email, userId, setUserId, toggle,setToggle}}>
-        {isLoading && <Preloader />}
-        {toggle == "reset" && <ResetPassword/>}
-        {toggle == "verify" && <VerifyEmail verifyReset={true} />}
-        {toggle === "forgot-password" && <div className="wrap">
+      {isLoading && <Preloader />}
+      {toggle == "reset" &&
+        <ResetPassword
+          userId={userId}
+        />}
+      {toggle == "verify" &&
+        <VerifyEmail
+        verifyReset={true}
+        userId={userId}
+        />}
+      {toggle == "forgot-password" &&
+        <div className="wrap">
           <Link to="/login">
             <div className="back_ico top">
               <img src={back_icon} alt="Back icon" />
@@ -74,12 +123,13 @@ export default function ForgotPassword() {
                 placeholder="Enter email address"
                 onChange={(e) => setEmail(e.target.value)}
               />
+
+              {msg && <strong style={{ color: "red", textAlign: "center" }}>{msg}</strong>}
               <button className="createBtn st" onClick={(e) => sendCode(e)}>Verify email address</button>
             </form>
           </div>
         </div>
-          }
-      </UserInfoContext.Provider>
-    </>
+        }
+      </>
   );
 }

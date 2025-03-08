@@ -1,6 +1,6 @@
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
-import MyContext from "../contexts/MyContext";
+import {MyContext} from "../contexts/FeaturesProvider";
 
 import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 
@@ -11,18 +11,29 @@ import VerifyEmail from "./VerifyEmail";
 import SuccessPage from "./SuccessPage"
 
 export default function Signup() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [msg, setMsg] = useState("")
-  const [err, setErr] = useState(false)
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [password, setPassword] = useState("")
-  const [email, setEmail] = useState("");
-  const [toggle, setToggle] = useState("signup")
 
-  const {
-    timeoutFunc,
+   const {
+    isLoading,
+    setIsLoading,
+    msg,
+    setMsg,
+    error,
+    setError,
+    email,
+    setEmail,
+    toggle, 
+     setToggle,
+    timeoutFunc
   } = useContext(MyContext)
+
+
+  useEffect(() => {
+    setIsLoading(false)
+    setToggle("signup")
+  },[])
 
   const handleFirstName = (e) => {
     setFirstName(e.target.value);
@@ -48,41 +59,40 @@ export default function Signup() {
     e.preventDefault();
     setIsLoading(true);
 
-
     try {
       const response = await axios.post("http://localhost:5000/register", {
         name: `${firstName} ${lastName}`,
         password: password,
         email: email,
-      },{withCredentials:true});
+      },
+        {
+          withCredentials: true 
+      });
 
-      localStorage.setItem("email", email)
       setToggle("verify")
       timeoutFunc()
 
       setIsLoading(false)      
     } catch (err) {
       
-      console.log(err)
       if (!err.response) {
         setMsg("Please check your internet connection :)")
         setIsLoading(false)
 
-        setErr(true)
+        setError(true)
         setTimeout(() => {
-          setErr(false)
+          setError(false)
         }, 3000)
         
         return;
       }
 
-      console.log(err.response);
       setIsLoading(false)      
-      setErr(true)
+      setError(true)
       setMsg(err.response.data.message)
 
       setTimeout(() => {
-        setErr(false)
+        setError(false)
       }, 3000)
     }
   };
@@ -92,20 +102,20 @@ export default function Signup() {
       {isLoading && <Preloader/>}
       {toggle == "signup" && <SignupUI
         signup={signup}
-        handleFirstNam={handleFirstName}
+        handleFirstName={handleFirstName}
         handleLastName={handleLastName}
         handleEmail={handleEmail}
         handlePassword={handlePassword}
-        err={err}
+        err={error}
         msg={msg}
       />}
       {toggle == "verify" &&
       <VerifyEmail
-        toggle={toggle}
-        setToggle={setToggle}
         email={email}
+        verifyMail={true}
         />
       }
+      {toggle == "success" && <SuccessPage msg={msg} />}
     </>
   );
 }
