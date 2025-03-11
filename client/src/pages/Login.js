@@ -81,7 +81,8 @@ export default function Login() {
 
       console.log(err)
 
-      if (!err.response || err.response.data.msg) {
+
+      if (!err.response || typeof err.response.data.msg !=="string" || !err.response.data) {
         setMsg("Please check your internet connection :)")
 
         setTimeout(() => {
@@ -90,7 +91,9 @@ export default function Login() {
         
         return
       }
+
       setMsg(err.response.data.msg)
+
 
       setTimeout(() => {
         setError(false)
@@ -114,8 +117,8 @@ export default function Login() {
 
   return (
     <>
-      {isLoading && <Preloader  />}
       <div className="wrap">
+        {isLoading && <Preloader/>}
         <Link to="/">
           <div className="back_ico top">
             <img src={back_icon} alt="Back icon" className="back" />

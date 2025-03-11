@@ -2,7 +2,6 @@ const sendEmail = require("../services/email.services");
 const jwt = require("jsonwebtoken");
 const { validateEmail } = require("../validations/user.validation");
 const User = require("../model/user.model");
-const Token = require("../model/token.model");
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;

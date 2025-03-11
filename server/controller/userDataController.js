@@ -5,11 +5,11 @@ const { hashPassword } = require("../utils/passwordUtil");
 const createPassword = async (req, res) => {
   const { _id } = req.user;
   const { username, password, site } = req.body;
+  console.log(req.body)
 
   const user = await UserData.findOne({ userId: _id });
-  const hashedPassword = await hashPassword(password);
 
-  const data = { site, username, password: hashedPassword };
+  const data = { site, username, password };
 
   if (!user) {
     await UserData.create({
@@ -46,10 +46,9 @@ const editPassword = async (req, res) => {
   }
 
   if (password) {
-    const hashedPassword = await hashPassword(password);
     await UserData.updateOne(
       { userId: _id },
-      { $set: { [`data.${id}.password`]: hashedPassword } }
+      { $set: { [`data.${id}.password`]: password } }
     );
   }
 
@@ -59,6 +58,8 @@ const editPassword = async (req, res) => {
 const deletePassword = async (req, res) => {
   const { id } = req.params;
   const { _id } = req.user;
+
+  console.log("id ", _id)
 
   const user = await UserData.updateOne(
     { userId: _id },

@@ -1,6 +1,5 @@
 const { hashPassword } = require("../utils/passwordUtil");
 const User = require("../model/user.model");
-const Token = require("../model/token.model");
 
 const resetPassword = async (req, res) => {
   const { id } = req.params;

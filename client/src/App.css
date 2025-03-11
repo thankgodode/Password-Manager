@@ -276,7 +276,8 @@ content .login {
 }
 
 .add_password input {
-  background: white;
+  background: rgb(220, 254, 255);
+  padding: 0.8rem 0;
 }
 
 .figure h2 {
@@ -284,7 +285,7 @@ content .login {
   color: white;
   font-family: poppins;
   font-weight: 700;
-  margin: 0 0 1.7rem 0;
+  margin: 1rem 0 1.7rem 0;
 }
 
 .form button {
@@ -292,10 +293,11 @@ content .login {
   border: none;
   font-size: 0.9rem;
   color: white;
-  padding: 0.5rem 0;
+  padding: 1rem 0;
   font-family: poppins;
   margin: 1.1rem 0 0 0;
-  border-radius: 8px;
+  border-radius: 30px;
+  transition: 0.3s;
 }
 
 .form.password label {
