@@ -1,4 +1,5 @@
 import { useState } from "react";
+import back_icon from "../img/arrow.svg";
 
 export default function GeneratePassword(props) {
   const [uppL, setUppL] = useState(false);
@@ -37,6 +38,9 @@ export default function GeneratePassword(props) {
 
   return (
     <>
+      <div className="back_ico top" onClick={() => props.setToggleModal("dashboard")}>
+        <img src={back_icon} alt="Back icon" />
+      </div>
       <div className="figure generate_password">
         <h2>Generate Password</h2>
 
@@ -62,12 +66,6 @@ export default function GeneratePassword(props) {
             setSymb={setSymb}
             setNum={setNum}
           />
-          <button
-            className="close_p cancel"
-            onClick={() => props.setToggleModal("dashboard")}
-          >
-            Close
-          </button>
         </div>
       </div>
     </>

@@ -64,21 +64,24 @@ export default function ForgotPassword() {
       console.log(error)
       setIsLoading(false)
 
-      if (!error.response) {
+      
+      if (!error.response || typeof error.response.data.msg !=="string" || !error.response.data) {
         setMsg("Please check your internet connection :)")
 
         setTimeout(() => {
           setMsg("")
         }, 3000)
+        
         return
       }
       
-      setMsg(error.response.data.msg)
-
       setTimeout(() => {
         setMsg("")
       }, 3000)
+
+      setMsg(error.response.data.msg)
     }
+    
   }
 
   return (

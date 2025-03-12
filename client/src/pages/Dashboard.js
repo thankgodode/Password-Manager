@@ -5,21 +5,22 @@ import SavedPassword from "../components/SavedPassword";
 import AddPassword from "../components/AddPassword";
 import Setting from "../components/Setting";
 
-import { MyContext } from "../contexts/FeaturesProvider";
 import API from "../utils/api";
 
 import { useNavigate } from "react-router-dom";
 import Preloader from "../components/Preloader";
+import ShowPassword from "../components/ShowPassword";
 
 export default function Dashboard() {
   const [toggleModal, setToggleModal] = useState("");
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [profileName, setProfileName] = useState("")
 
   const navigate = useNavigate()
 
     useEffect(() => {
         console.log("Dashboard page...")
+        setIsLoading(true)
         const checkAuth = async () => {
           try {
             const auth = await API.get("/dashboard");
@@ -57,23 +58,23 @@ export default function Dashboard() {
 
   return (
     <>
-      {isLoading && <Preloader/>}
-      {toggleModal == "add" || toggleModal == "generate" ? (
+      {/* {toggleModal == "add" || toggleModal == "generate" ? (
         <div className="modal"></div>
-      ) : (
-        ""
-      )}
+        ) : (
+          ""
+          )} */}
       {/* {toggleModal == "saved" || toggleModal == "setting" ? (
         <div className="white_layout" style={{position:"relative"}}></div>
-      ) : (
-        ""
-      )} */}
+        ) : (
+          ""
+          )} */}
       <div className="wrap">
+        {isLoading && <Preloader/>}
         {toggleModal == "dashboard" &&
           <>
             <div className="header top">
               <div className="name nav" style={{display:"flex",justifyContent:"center", alignItems:"center"}}>
-              <h3>{profileName.split(" ").map((word) => word.charAt(0).toUpperCase()).join("")}</h3>
+                <h3>{profileName.split(" ").map((word) => word.charAt(0).toUpperCase()).join("")}</h3>
               </div>
               <div className="settings nav" onClick={openSetting}>
                 <img src={setting_ico} alt="setting" />
