@@ -8,27 +8,32 @@ import ShowPassword from "./ShowPassword";
 import EditPassword from "./EditPassword";
 
 export default function SavedPassword(props) {
-  const [savedPassword, setSavedPassword] = useState("")
-  const [info, setInfo] = useState("")
+  const [formattedData, setFormattedData] = useState("")
+  const [activeData, setActiveData] = useState("")
   const [toggleModal, setToggleModal] = useState("saved")
   const [loading, setLoading] = useState(true)
   const [index, setIndex] = useState()
-  const [id, setId] = useState()
   const [error, setError] = useState(false)
+  const [filterData,setFilterData] = useState("")
 
   useEffect(() => {
     const getPasswords = async() => {
       try {
         const response = await API.get("/dashboard/get");
-        console.log(response.data.userData)
-
-        setLoading(false)
-        if (!response.data.usersData || response.data.usersData.data.length<1) {
-          setSavedPassword("empty")
+        console.log(response)
+        
+        if (!response.data.usersData || response.data.usersData.data.length < 1) {
+          setFormattedData("empty")
+          setLoading(false)
           return
         }
+        
+        const data = formatDataFunc(response.data.usersData.data)
+        console.log("Data: ", data)
 
-        setSavedPassword(response.data.usersData)
+        setFormattedData(data)
+        setFilterData(data)
+        setLoading(false)
       } catch (error) {
         console.log(error)
         setLoading(false)
@@ -39,24 +44,41 @@ export default function SavedPassword(props) {
     getPasswords()
   }, [])
 
-  const showData = (el,i,id) => {
+  const showData = (el) => {
     setToggleModal("show")
-    setInfo(el)
-    setIndex(i)
-    setId(id)
+    setActiveData(el)
   }
+
+  const search = (e) => {
+    const searchTerm = e.target.value
+
+    const filtered = filterData.filter((el, i) => el.site.toLowerCase().includes(searchTerm.toLowerCase())) 
+    setFormattedData(filtered)
+  }
+
+
+  const formatDataFunc = (data) => Object.values(
+    data.reduce((acc, { site, username, password,_id}) => {
+        if (!acc[site]) {
+            acc[site] = { site, info: [] };
+        }
+        acc[site].info.push({ username, password,_id});
+        return acc;
+    }, {})
+  );
+
 
   return (
     <>
-      {toggleModal == "show" && <ShowPassword info={info} id={id} setToggleModal={setToggleModal} savedPassword={savedPassword} setSavedPassword={setSavedPassword} />}
-      {toggleModal == "edit" && <EditPassword info={info} index={index} setToggleModal={setToggleModal} setInfo={setInfo} setSavedPassword={setSavedPassword} />}
+      {toggleModal == "show" && <ShowPassword index={index} setIndex={setIndex} activeData={activeData} setActiveData={setActiveData} setToggleModal={setToggleModal} formattedData={formattedData} setFormattedData={setFormattedData} />}
+      {toggleModal == "edit" && <EditPassword activeData={activeData} index={index} setToggleModal={setToggleModal} setActiveData={setActiveData} setFormattedData={setFormattedData} />}
       {toggleModal ==="saved" &&
         <>
           <div className="back_ico top" onClick={() => props.setToggleModal("dashboard")}>
             <img src={back_icon} alt="Back icon" />
           </div>
           <div className="search">
-            <input type="text" placeholder="Search here" className="v" />
+          <input type="text" placeholder="Search here" className="v" onChange={(e) => search(e)}/>
             <img src={search_icon} alt="Search icon" className="v" />
           </div>
           <div class="saved_passwords">
@@ -79,10 +101,10 @@ export default function SavedPassword(props) {
           </button>
           {loading && <span style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>Loading...</span>}
           {error && <span style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>Sorry, an unexpected error occured</span>}
-          {savedPassword == "empty" ? "There is no saved password here :(" : ""}
-          {savedPassword.data ? 
-            savedPassword.data.map((el, i) =>
-              <div onClick={() => showData(el,i,el._id)} key={i}>
+          {formattedData == "empty" ? "There is no saved password here :(" : ""}
+          {typeof formattedData =="object" ? 
+            formattedData.map((el, i) =>
+              <div onClick={() => showData(el)} key={i}>
                 <h3>{el.site.split(".")[0]}</h3>
               </div>
             )
@@ -90,7 +112,6 @@ export default function SavedPassword(props) {
         </div>
       </>
       }
-      {}
     </>
   );
 }

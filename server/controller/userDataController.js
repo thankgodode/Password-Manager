@@ -38,17 +38,31 @@ const editPassword = async (req, res) => {
   const { _id } = req.user;
   const { username, password } = req.body;
 
-  if (username) {
-    await UserData.updateOne(
-      { userId: _id },
-      { $set: { [`data.${id}.username`]: username } }
-    );
-  }
+  // if (username) {
+  //   await UserData.updateOne(
+  //     { userId: _id },
+  //     { $set: { [`data.${id}.username`]: username } }
+  //   );
+  // }
+
+  // if (username) {
+  //   await UserData.updateOne(
+  //     { userId: _id },
+  //     { $set: { [`data.${id}.username`]: username } }
+  //   );
+  // }
 
   if (password) {
     await UserData.updateOne(
-      { userId: _id },
-      { $set: { [`data.${id}.password`]: password } }
+      { userId: _id, "data._id":id },
+      { $set: { [`data.$.password`]: password } }
+    );
+  }
+
+  if (username) {
+    await UserData.updateOne(
+      { userId: _id, "data._id":id },
+      { $set: { [`data.$.username`]: username } }
     );
   }
 

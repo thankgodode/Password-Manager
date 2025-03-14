@@ -153,10 +153,23 @@ content .login {
 
 .figure .form {
   display: flex;
-  /* align-items: center; */
-  width: 100%;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.5rem;
+}
+
+.group .form{
+  width: 91%;
+  margin: 1rem 0 0 0;
+  background:rgba(225, 239, 243, 0.69);
+  padding: 1rem 1rem;
+  border-radius: 15px;
+  display:flex;
+  flex-direction: column;
+  gap:0.3rem;
+}
+
+.group::-webkit-scrollbar{
+  display:none
 }
 
 .form input {

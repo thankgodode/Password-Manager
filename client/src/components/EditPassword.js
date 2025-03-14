@@ -8,18 +8,20 @@ import Preloader from "./Preloader";
 
 export default function EditPassword(props) {
   const [addBtn, setAddBtn] = useState("Edit")
-  const [username, setUsername] = useState(props.info.username)
-  const [password, setPassword] = useState(props.info.password)
-  const [site, setSite] = useState(props.info.site)
+  const [username, setUsername] = useState(props.activeData.info[props.index].username)
+  const [password, setPassword] = useState(props.activeData.info[props.index].password)
+  const [site, setSite] = useState(props.activeData.site)
   const [loading, setLoading] = useState(false)
 
   const editPassword = async (e) => {
+    const id = props.activeData.info[props.index]._id
+
     e.preventDefault()
 
     setAddBtn("Updating password...")
     setLoading(true)
     try {
-      const response = await API.post(`/dashboard/edit/${props.index}`,
+      const response = await API.post(`/dashboard/edit/${id}`,
         {
           site,
           username,
@@ -30,21 +32,36 @@ export default function EditPassword(props) {
         })
         
       const response2 = await API.get("/dashboard/get");
+      const data = formattedData(response2.data.usersData.data)
+
+      props.activeData.info[props.index].username = username
+      props.activeData.info[props.index].password = password
 
       setAddBtn("Saved!")
       setTimeout(() => {
         setAddBtn("Edit")
       }, 2000)
       
-      props.setSavedPassword(response2.data.usersData)
+      props.setFormattedData(data)
       setLoading(false)
-      props.setInfo({ username: username, site: site, password: password })
+      props.setActiveData({site:props.activeData.site, info:props.activeData.info})
       
       props.setToggleModal("show")
     } catch (error) {
       console.log(error)
     }
   }
+
+    const formattedData = (data) => Object.values(
+    data.reduce((acc, { site, username, password,_id}) => {
+        if (!acc[site]) {
+            acc[site] = { site, info: [] };
+        }
+        acc[site].info.push({ username, password,_id});
+        return acc;
+    }, {})
+  );
+
   
   return (
     <>
