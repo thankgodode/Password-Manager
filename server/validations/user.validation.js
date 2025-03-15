@@ -50,10 +50,9 @@ const validateUserData = [
     .isURL().withMessage('Please enter a valid URL')
     .optional(), // This can be use
 
-  body("username").
-    isEmail().withMessage("Invalid email entered").
-    normalizeEmail().
-    escape(),
+  body("username")
+    .isString().withMessage("Username must be a string")
+    .escape(),
   
   body('password')
     .trim()
