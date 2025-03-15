@@ -1,11 +1,16 @@
 // const { validateUserData } = require("../validations/user.validation");
 const UserData = require("../model/userData.model");
 const { hashPassword } = require("../utils/passwordUtil");
+const {validationResult} = require("express-validator")
 
 const createPassword = async (req, res) => {
   const { _id } = req.user;
   const { username, password, site } = req.body;
-  console.log(req.body)
+  const error = validationResult(req)
+
+  if (!error.isEmpty()) {
+    return res.status(422).json({error: error.array()})
+  }
 
   const user = await UserData.findOne({ userId: _id });
 
@@ -37,20 +42,11 @@ const editPassword = async (req, res) => {
   const { id } = req.params;
   const { _id } = req.user;
   const { username, password } = req.body;
+  const error = validationResult(req)
 
-  // if (username) {
-  //   await UserData.updateOne(
-  //     { userId: _id },
-  //     { $set: { [`data.${id}.username`]: username } }
-  //   );
-  // }
-
-  // if (username) {
-  //   await UserData.updateOne(
-  //     { userId: _id },
-  //     { $set: { [`data.${id}.username`]: username } }
-  //   );
-  // }
+  if (!error.isEmpty()) {
+    return res.status(422).json({error: error.array()})
+  }
 
   if (password) {
     await UserData.updateOne(

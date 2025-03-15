@@ -1,13 +1,10 @@
 const User = require("../model/user.model");
+const jwt = require("jsonwebtoken");
+const {validationResult} = require("express-validator")
+
 const { hashPassword } = require("../utils/passwordUtil");
 
-const { validateRegisterInput } = require("../validations/user.validation");
 const sendEmail = require("../services/email.services");
-
-const jwt = require("jsonwebtoken");
-const userDataModel = require("../model/userData.model");
-
-const tempUser = {};
 
 const googleSignup = (req, res) => {
   passport.authenticate("google");
@@ -15,10 +12,10 @@ const googleSignup = (req, res) => {
 };
 
 const registerUser = async (req, res) => {
-  const { error } = validateRegisterInput(req.body);
+  const error = validationResult(req);
 
-  if (error) {
-    return res.status(400).json({ message: error.details[0].message })
+  if (!error.isEmpty()) {
+    return res.status(422).json({error: error.array()})
   }
 
   let user = req.body;
