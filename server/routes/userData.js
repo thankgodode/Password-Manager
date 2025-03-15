@@ -6,10 +6,11 @@ const {
   getAllPasswords,
   deletePassword,
 } = require("../controller/userDataController");
+const {validateUserData} = require("../validations/user.validation")
 
-router.route("/create").post(createPassword);
+router.route("/create").post(validateUserData, createPassword);
 router.route("/get").get(getAllPasswords);
-router.route("/edit/:id").post(editPassword);
+router.route("/edit/:id").post(validateUserData,editPassword);
 router.route("/delete/:id").delete(deletePassword);
 
 module.exports = router;

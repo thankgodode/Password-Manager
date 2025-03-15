@@ -1,17 +1,18 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
+const {validationResult} = require("express-validator")
+
 const User = require("../model/user.model");
 const {refreshToken, accessToken} = require("../utils/createJWT");
 const { comparePassword } = require("../utils/passwordUtil");
 
-const { validateLoginInput } = require("../validations/user.validation");
-
 const loginUser = async (req, res) => {
-  const { error } = validateLoginInput(req.body);
+  const error = validationResult(req);
+  
   const { email, password } = req.body;
 
-  if (error) {
-    return res.status(400).json({ msg: error });
+  if (!error.isEmpty()) {
+    return res.status(422).json({error: error.array()})
   }
 
   try {

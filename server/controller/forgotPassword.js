@@ -1,14 +1,14 @@
-const sendEmail = require("../services/email.services");
 const jwt = require("jsonwebtoken");
-const { validateEmail } = require("../validations/user.validation");
+const {validationResult} = require("express-validator")
+const sendEmail = require("../services/email.services");
 const User = require("../model/user.model");
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
-  const { error } = validateEmail(req.body);
+  const  error  = validationResult(req);
 
-  if (error) {
-    return res.status(401).json({ msg: error.details[0].message });
+  if (!error.isEmpty()) {
+    return res.status(422).json({error: error.array()})
   }
 
   const user = await User.findOne({ email });
@@ -20,16 +20,7 @@ const forgotPassword = async (req, res) => {
   const token = await sendEmail(email);
   user.token = token.token
   const result = await user.save()
-  
-  // var tokenSchema = await Token.findOne({ userId: user._id });
 
-  // if (!tokenSchema) {
-  //   tokenSchema = await Token.create({ userId: user._id, token: token.token});
-  // }
-
-  // tokenSchema.token = token.token
-  
-  // const result = await tokenSchema.save();
   res.status(200).json({ msg: "A code has been sent to your email", user });
 }
 

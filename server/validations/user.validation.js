@@ -1,48 +1,63 @@
 const Joi = require("joi");
+const {body}  = require("express-validator")
 
-function validateRegisterInput(input) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).max(50).required(),
-    email: Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(5).max(255).required(),
-  });
 
-  return schema.validate(input);
-}
+const validateRegisterInput = [
+    body('name')
+      .isString().withMessage('Name must be a string')
+      .escape(),
 
-function validateLoginInput(input) {
-  const schema = Joi.object({
-    email: Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(5).max(255).required(),
-  });
+    // Validate and sanitize email
+    body('email')
+      .isEmail().withMessage('Invalid email address')
+      .normalizeEmail() // Normalizes email to lowercase
+      .escape(), // Escape any special HTML characters in the email address
 
-  return schema.validate(input);
-}
+    // Validate password
+    body('password')
+      .trim()
+      .escape()
+]
 
-function validateEmail(input) {
-  const schema = Joi.object({
-    email: Joi.string().min(5).max(255).required().email(),
-  });
+const validateLoginInput = [
+    // Validate and sanitize email
+    body('email')
+      .isEmail().withMessage('Invalid email address')
+      .normalizeEmail() // Normalizes email to lowercase
+      .escape(), // Escape any special HTML characters in the email address
 
-  return schema.validate(input);
-}
+    // Validate password
+    body('password')
+      .trim()
+      .escape()
+]
 
-function validatePassword(input) {
-  const schema = Joi.object({
-    password: Joi.string().min(5).max(255).required(),
-  });
+const validateEmail = [
+  body("email").
+    isEmail().withMessage("Invalid email address").
+    normalizeEmail().
+    escape()
+]
 
-  return schema.validate(input);
-}
+const validatePassword = [
+  body("password").
+    trim().
+    escape()
+]
 
-function validateUserData() {
-  const schema = Joi.object({
-    username: Joi.string(),
-    password: Joi.string(),
-  });
+const validateUserData = [
+  body('site')
+    .isURL().withMessage('Please enter a valid URL')
+    .optional(), // This can be use
 
-  return schema.validate(input);
-}
+  body("username")
+    .isString().withMessage("Username must be a string")
+    .escape(),
+  
+  body('password')
+    .trim()
+    .escape()
+]
 
 module.exports = {
   validateRegisterInput,

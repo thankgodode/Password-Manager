@@ -7,53 +7,39 @@ import Preloader from "./Preloader";
 
 
 export default function AddPassword(props) {
-  // return (
-
-  //   <>
-  //     {/* <div className="back_ico top">
-  //         <img src={back_icon} alt="Back icon" />
-  //       </div> */}
-  //     <div className="figure add_password">
-  //       <h2>Add Password</h2>
-
-        // <div className="form password">
-        //   <label for="add_s">Site</label>
-        //   <input id="add_s" type="text" className="add_s st" />
-        //   <label for="add_n">Username</label>
-        //   <input id="add_n" type="text" className="add_n st" />
-        //   <label for="add_p">Password</label>
-        //   <input id="add_p" type="password" className="add_p st" />
-        //   <div
-        //     style={{
-        //       display: "flex",
-        //       justifyContent: "center",
-        //       gap: "0.5rem",
-        //       width: "100%",
-        //     }}
-        //   >
-        //     <button className="save_p proceed">Add</button>
-        //     <button
-        //       className="close_p cancel"
-        //       onClick={() => props.setToggleModal("dashboard")}
-        //     >
-        //       Close
-        //     </button>
-        //   </div>
-        // </div>
-  //     </div>
-  //   </>
-  // );
-
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [site, setSite] = useState("")
   const [addBtn, setAddBtn] = useState("Add")
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const [msg, setMsg] = useState("")
 
   const addPassword = async (e) => {
+    e.preventDefault()
+
+    if (!username || !password || !site) {
+      setError(true)
+      setMsg("Input fields cannot be left blank :(")
+
+      setTimeout(() => {
+        setError(false)
+      },3000)
+      return
+    }
+
+    if (password.length < 8) {
+      setError(true)
+      setMsg("Password cannot be less than 8 characters")
+
+      setTimeout(() => {
+        setError(false)
+      },3000)
+      return
+    }
+
     setLoading(true)
 
-    e.preventDefault()
 
     setAddBtn("Adding password...")
 
@@ -76,6 +62,27 @@ export default function AddPassword(props) {
       setPassword("")
     } catch (error) {
       console.log(error)
+      setLoading(false)
+       
+      if (error.response.data.error && error.response.data.error.length < 2) {
+        setMsg(error.response.data.error[0].msg)
+        setError(true)
+        
+        setTimeout(() => {
+          setError(false)
+          setAddBtn("Add")
+        }, 3000)
+        
+        return
+      }
+
+      setMsg("Sorry, am unexpected error occurred, try reconnecting to the internet :(")
+      setError(true)
+      
+      setTimeout(() => {
+        setError(false)
+        setAddBtn("Add")
+      },3000)
     }
   }
   
@@ -104,6 +111,11 @@ export default function AddPassword(props) {
               onChange={(e) => setPassword(e.target.value)}
               value={password}
             />
+            {error &&
+              <span style={{ color:"red", display: "flex", justifyContent: "center", alignContent: "center" }}>
+                {msg}
+              </span>
+            }
             <div
               style={{
                 display: "flex",
@@ -114,12 +126,6 @@ export default function AddPassword(props) {
             >
             <button className="save_p proceed"
               onClick={addPassword}>{addBtn}</button>
-              {/* <button
-                className="close_p cancel"
-                onClick={() => props.setToggleModal("dashboard")}
-              >
-                Close
-              </button> */}
             </div>
           </form>
       </div>
