@@ -57,8 +57,53 @@ export default function Signup() {
 
   const signup = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s]).+$/;
+    
+    if (!firstName || !lastName || !password || !email) {
+      setError(true)
+      setMsg("Input fields cannot be left empty")
+
+       setTimeout(() => {
+        setError(false)
+       }, 3000)
+      
+      return
+    }
+
+    if (firstName.length < 3 || lastName.length < 3) {
+      setError(true)
+      setMsg("First/last name cannot be less than 5 characters")
+
+      setTimeout(() => {
+        setError(false)
+      }, 3000)
+      
+      return
+    }
+
+    if (password.length < 8) {
+      setError(true)
+      setMsg("Password length must be greater than or equal to 8")
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
+
+      return
+    }
+
+    if (!regex.test(password)) {
+      setError(true)
+      setMsg("Password must contain atleast an uppercase, lowercase and a special character")
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
+
+      return
+    }
+    
+
+    setIsLoading(true);
     try {
       const response = await axios.post("http://localhost:5000/register", {
         name: `${firstName} ${lastName}`,
@@ -74,6 +119,17 @@ export default function Signup() {
 
       setIsLoading(false)      
     } catch (err) {
+      if (err.response.data.error) {
+        setError(true)
+        setMsg(err.response.data.error[0].msg)
+        setIsLoading(false)
+
+        setTimeout(() => {
+          setError(false)
+        }, 3000)
+        
+        return;  
+      }
       
       if (!err.response) {
         setMsg("Please check your internet connection :)")

@@ -7,16 +7,38 @@ import Preloader from "./Preloader";
 
 
 export default function EditPassword(props) {
-  const [addBtn, setAddBtn] = useState("Edit")
+  const [addBtn, setAddBtn] = useState("Save")
   const [username, setUsername] = useState(props.activeData.info[props.index].username)
   const [password, setPassword] = useState(props.activeData.info[props.index].password)
   const [site, setSite] = useState(props.activeData.site)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+  const { msg, setMsg } = useState("")
 
   const editPassword = async (e) => {
+    e.preventDefault()
     const id = props.activeData.info[props.index]._id
 
-    e.preventDefault()
+    if (!username || !password || !site) {
+      setError(true)
+      setMsg("Input fields cannot be left blank :(")
+
+      setTimeout(() => {
+        setError(false)
+      },3000)
+      return
+    }
+
+    if (password.length < 8) {
+      setError(true)
+      setMsg("Password cannot be less than 8 characters")
+
+      setTimeout(() => {
+        setError(false)
+      },3000)
+      return
+    }
+
 
     setAddBtn("Updating password...")
     setLoading(true)
@@ -36,19 +58,37 @@ export default function EditPassword(props) {
 
       props.activeData.info[props.index].username = username
       props.activeData.info[props.index].password = password
+      props.setFormattedData(data)
+      props.setActiveData({site:props.activeData.site, info:props.activeData.info})
 
       setAddBtn("Saved!")
       setTimeout(() => {
-        setAddBtn("Edit")
+        setAddBtn("Save")
       }, 2000)
       
-      props.setFormattedData(data)
       setLoading(false)
-      props.setActiveData({site:props.activeData.site, info:props.activeData.info})
-      
       props.setToggleModal("show")
+
     } catch (error) {
       console.log(error)
+      setError(true)
+      if (error.response.data.error && error.response.data.error.length < 2) {
+        setMsg(error.response.data.error[0].msg)
+        
+        setTimeout(() => {
+          setLoading(false)
+          setError(false)
+        }, 3000)
+        
+        return
+      }
+
+      setMsg("Sorry, am unexpected error occurred, try reconnecting to the internet :(")
+      
+      setTimeout(() => {
+        setLoading(false)
+        setError(false)
+      },3000)
     }
   }
 
@@ -95,7 +135,12 @@ export default function EditPassword(props) {
                 gap: "0.5rem",
                 width: "100%",
               }}
-            >
+          >
+            {error &&
+              <span style={{ color:"red", display: "flex", justifyContent: "center", alignContent: "center" }}>
+                {msg}
+              </span>
+            }
             <button className="save_p proceed"
               onClick={editPassword}>{addBtn}</button>
             </div>

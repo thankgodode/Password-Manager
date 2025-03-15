@@ -70,8 +70,24 @@ export default function SavedPassword(props) {
 
   return (
     <>
-      {toggleModal == "show" && <ShowPassword index={index} setIndex={setIndex} activeData={activeData} setActiveData={setActiveData} setToggleModal={setToggleModal} formattedData={formattedData} setFormattedData={setFormattedData} />}
-      {toggleModal == "edit" && <EditPassword activeData={activeData} index={index} setToggleModal={setToggleModal} setActiveData={setActiveData} setFormattedData={setFormattedData} />}
+      {toggleModal == "show" &&
+        <ShowPassword
+          index={index}
+          setIndex={setIndex}
+          activeData={activeData}
+          setActiveData={setActiveData}
+          setToggleModal={setToggleModal}
+          formattedData={formattedData}
+          setFormattedData={setFormattedData} />
+      }
+      {toggleModal == "edit" &&
+        <EditPassword
+          activeData={activeData}
+          index={index}
+          setToggleModal={setToggleModal}
+          setActiveData={setActiveData}
+          setFormattedData={setFormattedData} />
+      }
       {toggleModal ==="saved" &&
         <>
           <div className="back_ico top" onClick={() => props.setToggleModal("dashboard")}>
@@ -89,7 +105,6 @@ export default function SavedPassword(props) {
               border: "none",
               outline: "none",
               padding: "0.1rem 0",
-              // width: "50px",
               cursor: "pointer",
               fontSize: "2rem",
               borderRadius:"5px"
@@ -99,8 +114,26 @@ export default function SavedPassword(props) {
           >
             +
           </button>
-          {loading && <span style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>Loading...</span>}
-          {error && <span style={{ display: "flex", justifyContent: "center", alignContent: "center" }}>Sorry, an unexpected error occured</span>}
+          {loading &&
+            <span style={{
+                display: "flex",
+                justifyContent: "center",
+                alignContent: "center"
+              }}
+            >
+              Loading...
+            </span>
+          }
+
+          {error && <span style={{
+            display: "flex",
+            justifyContent: "center",
+            alignContent: "center"
+          }}>
+            Sorry, an unexpected error occured, try checking your internet connection :(
+          </span>
+          }
+
           {formattedData == "empty" ? "There is no saved password here :(" : ""}
           {typeof formattedData =="object" ? 
             formattedData.map((el, i) =>

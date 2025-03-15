@@ -44,10 +44,10 @@ export default function Login() {
   }, [])
 
   const loginUser = async (e) => {
-    e.preventDefault()
-
-    setIsLoading(true)
-
+    e.preventDefault()  
+    
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s]).+$/;
+   
     if (!loginEmail || !loginPassword) {
       setError(true)
       setMsg("Input field(s) cannot be left blank :)")
@@ -60,9 +60,43 @@ export default function Login() {
       return
     }
 
+    //Front-end validation
+    if (!loginEmail || !loginPassword) {
+      setError(true)
+      setMsg("Input field cannot be left blank")
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
+
+      return
+    }
+
+    if (loginPassword.length < 8) {
+      setError(true)
+      setMsg("Password length must be greater than or equal to 8")
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
+
+      return
+    }
+
+    if (!regex.test(loginPassword)) {
+      setError(true)
+      setMsg("Password must contain atleast an uppercase, lowercase and a special character")
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
+
+      return
+    }
+
+    setIsLoading(true)
+    
+
     try {
       const response = await axios.post("http://localhost:5000/login", {
-        email: loginEmail,
+        email: (loginEmail).toLowerCase(),
         password: loginPassword
       }, {
         withCredentials: true
@@ -80,7 +114,6 @@ export default function Login() {
       setIsLoading(false)
 
       console.log(err)
-
 
       if (!err.response || typeof err.response.data.msg !=="string" || !err.response.data) {
         setMsg("Please check your internet connection :)")
