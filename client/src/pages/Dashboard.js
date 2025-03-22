@@ -9,7 +9,6 @@ import API from "../utils/api";
 
 import { useNavigate } from "react-router-dom";
 import Preloader from "../components/Preloader";
-import ShowPassword from "../components/ShowPassword";
 
 export default function Dashboard() {
   const [toggleModal, setToggleModal] = useState("");
