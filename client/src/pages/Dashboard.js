@@ -9,6 +9,7 @@ import API from "../utils/api";
 
 import { useNavigate } from "react-router-dom";
 import Preloader from "../components/Preloader";
+import ViewPasswordProvider from "../contexts/ViewPasswordContext";
 
 export default function Dashboard() {
   const [toggleModal, setToggleModal] = useState("");
@@ -67,49 +68,51 @@ export default function Dashboard() {
         ) : (
           ""
           )} */}
-      <div className="wrap">
-        {isLoading && <Preloader/>}
-        {toggleModal == "dashboard" &&
-          <>
-            <div className="header top">
-              <div className="name nav" style={{display:"flex",justifyContent:"center", alignItems:"center"}}>
-                <h3>{profileName.split(" ").map((word) => word.charAt(0).toUpperCase()).join("")}</h3>
+      <ViewPasswordProvider>
+        <div className="wrap">
+          {isLoading && <Preloader/>}
+          {toggleModal == "dashboard" &&
+            <>
+              <div className="header top">
+                <div className="name nav" style={{display:"flex",justifyContent:"center", alignItems:"center"}}>
+                  <h3>{profileName.split(" ").map((word) => word.charAt(0).toUpperCase()).join("")}</h3>
+                </div>
+                <div className="settings nav" onClick={openSetting}>
+                  <img src={setting_ico} alt="setting" />
+                </div>
               </div>
-              <div className="settings nav" onClick={openSetting}>
-                <img src={setting_ico} alt="setting" />
+              <div className="figure dashboard">
+                <div style={{ margin: "30px 0 0 0" }}>
+                  <button className="save password" onClick={toggleSavedPassword}>
+                    Save Password
+                  </button>
+                  <button
+                    className="generate password"
+                    onClick={toggleGeneratePassword}
+                  >
+                    Generate Password
+                  </button>
+                  <button className="add password" onClick={toggleAddPassword}>
+                    Add Password
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="figure dashboard">
-              <div style={{ margin: "30px 0 0 0" }}>
-                <button className="save password" onClick={toggleSavedPassword}>
-                  Save Password
-                </button>
-                <button
-                  className="generate password"
-                  onClick={toggleGeneratePassword}
-                >
-                  Generate Password
-                </button>
-                <button className="add password" onClick={toggleAddPassword}>
-                  Add Password
-                </button>
-              </div>
-            </div>
-          </>
-        }
-        {toggleModal == "saved" && (
-          <SavedPassword setToggleModal={setToggleModal} />
-        )}
-        {toggleModal == "generate" && (
-          <GeneratePassword setToggleModal={setToggleModal} isLoading={isLoading} setIsLoading={setIsLoading} />
-        )}
-        {toggleModal == "add" && (
-          <AddPassword setToggleModal={setToggleModal} isLoading={isLoading} setIsLoading={setIsLoading} />
-        )}
-        {toggleModal == "setting" && (
-          <Setting setToggleModal={setToggleModal} isLoading={isLoading} setIsLoading={setIsLoading} />
-        )}
-      </div>
+            </>
+          }
+          {toggleModal == "saved" && (
+            <SavedPassword setToggleModal={setToggleModal} />
+          )}
+          {toggleModal == "generate" && (
+            <GeneratePassword setToggleModal={setToggleModal} isLoading={isLoading} setIsLoading={setIsLoading} />
+          )}
+          {toggleModal == "add" && (
+            <AddPassword setToggleModal={setToggleModal} isLoading={isLoading} setIsLoading={setIsLoading} />
+          )}
+          {toggleModal == "setting" && (
+            <Setting setToggleModal={setToggleModal} isLoading={isLoading} setIsLoading={setIsLoading} />
+          )}
+        </div>
+      </ViewPasswordProvider>
     </>
   );
 }

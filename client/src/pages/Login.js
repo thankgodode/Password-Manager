@@ -7,10 +7,12 @@ import API from "../utils/api"
 import axios from "axios"
 import Preloader from "../components/Preloader";
 import { MyContext } from "../contexts/FeaturesProvider";
+import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
 
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
+  const {viewPasswordFunc} = useContext(ViewPasswordContext)
 
   const {
     msg,
@@ -180,12 +182,17 @@ export default function Login() {
               placeholder="Email"
               onInput={(e) => setLoginEmail(e.target.value)}
             />
-            <input
-              type="password"
-              className="password st"
-              placeholder="Password"
-              onInput={(e) => setLoginPassword(e.target.value)}
-            />
+            <div style={{display:"flex",justifyContent:"space-between", background:"#e3d9ff", alignItems:"center", borderRadius:"8px"}}> 
+              <input
+                type="password"
+                className="password st"
+                placeholder="Password"
+                onChange={(e) => setLoginPassword(e.target.value)}
+                />
+              <span style={{display:"flex",justifyContent:"center", gap:"0.8rem", margin:"0 0.8rem 0 0"}}>
+                <i onClick={viewPasswordFunc} style={{cursor:"pointer",color:"black"}} class="bi bi-eye-slash" id="togglePassword"></i>
+              </span>
+            </div>
             <div
               style={{
                 display: "flex",

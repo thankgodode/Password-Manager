@@ -5,18 +5,6 @@ export default function FormComponent(props) {
 
   const {viewPasswordFormFunc} = useContext(ViewPasswordContext)
 
-    const showPassword = (e) => {
-        const ico = document.querySelector(".bi")
-        const text = document.querySelector(".password")
-
-        const t = text.getAttribute('type') === 'password' ?
-        text.setAttribute('type',"text") :
-        text.setAttribute("type", 'password');
-        
-        ico.classList.toggle("bi-eye")
-    
-    }
-
     const copyPassword = (text, id) => {
         const el = document.getElementById(id+"pwd")
         

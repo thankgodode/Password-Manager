@@ -51,12 +51,12 @@ const validateUserData = [
     .optional(), // This can be use
 
   body("username")
-    .isString().withMessage("Username must be a string")
-    .escape(),
+    .isString().withMessage("Username must be a string"),
+    // .escape(),
   
   body('password')
     .trim()
-    .escape()
+    // .escape()
 ]
 
 module.exports = {
@@ -64,5 +64,5 @@ module.exports = {
   validateLoginInput,
   validateEmail,
   validatePassword,
-  validateUserData,
-};
+  validateUserData
+}
