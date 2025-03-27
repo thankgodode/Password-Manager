@@ -1,5 +1,6 @@
 import back_icon from "../img/arrow.svg";
 import API from "../utils/api";
+import FormComponent from "./FormComponent";
 import Preloader from "./Preloader"
 import {useState} from "react"
 
@@ -16,6 +17,7 @@ export default function ShowPassword(props) {
       const response2 = await API.get("/dashboard/get")
 
       const filtered = props.activeData.info.filter((el, i) => el._id !== id)
+      console.log("Filtered: ", filtered)
       const data = formatDataFunc(response2.data.usersData.data)
       
       props.setFormattedData(data)
@@ -70,20 +72,7 @@ export default function ShowPassword(props) {
           {props.activeData.info.map((el, i) => {
             return <>
             <form className="form show_password">
-              <label>Username</label>
-              <input
-                type="text"
-                className="username st"
-                value={el.username}
-                disabled
-              />
-              <label>Password</label>
-              <input
-                type="password"
-                className="password st"
-                value={el.password}
-                disabled
-              />
+              <FormComponent el={el} i={i} />
               <div
                 style={{
                   display: "flex",

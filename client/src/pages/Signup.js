@@ -9,6 +9,7 @@ import axios from "axios";
 import Preloader from "../components/Preloader";
 import VerifyEmail from "./VerifyEmail";
 import SuccessPage from "./SuccessPage"
+import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
 
 export default function Signup() {
   const [firstName, setFirstName] = useState("")
@@ -177,6 +178,8 @@ export default function Signup() {
 }
 
 function SignupUI(props) {
+  const {viewPasswordFunc} = useContext(ViewPasswordContext)
+
   return (
     <div className="wrap">
           <Link to="/">
@@ -219,12 +222,17 @@ function SignupUI(props) {
                 placeholder="Email"
                 onChange={props.handleEmail}
               />
+              <div style={{display:"flex",justifyContent:"space-between", background:"#e3d9ff", alignItems:"center", borderRadius:"8px"}}> 
               <input
                 type="password"
                 className="password st"
                 placeholder="Password"
                 onChange={props.handlePassword}
-              />
+                />
+              <span style={{display:"flex",justifyContent:"center", gap:"0.8rem", margin:"0 0.8rem 0 0"}}>
+                <i onClick={viewPasswordFunc} style={{cursor:"pointer",color:"black"}} class="bi bi-eye-slash" id="togglePassword"></i>
+              </span>
+            </div>
               <button className="createBtn st" onClick={props.signup}>
                 Create account
               </button>

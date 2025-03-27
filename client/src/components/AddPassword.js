@@ -2,8 +2,9 @@ import back_icon from "../img/arrow.svg";
 import { Link } from "react-router-dom"
 
 import API from "../utils/api"
-import {useState, useEffect} from "react"
+import {useState, useEffect, useContext} from "react"
 import Preloader from "./Preloader";
+import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
 
 
 export default function AddPassword(props) {
@@ -14,6 +15,8 @@ export default function AddPassword(props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [msg, setMsg] = useState("")
+
+  const {viewPasswordFunc} = useContext(ViewPasswordContext)
 
   const addPassword = async (e) => {
     e.preventDefault()
@@ -85,7 +88,7 @@ export default function AddPassword(props) {
       },3000)
     }
   }
-  
+
   return (
     <>
       {loading && <Preloader />}
@@ -107,10 +110,17 @@ export default function AddPassword(props) {
               value={username}
             />
             <label for="add_p">Password</label>
-            <input id="add_p" type="password" className="add_p st" 
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
+            <div style={{display:"flex",justifyContent:"space-between", background:"rgb(220, 254, 255)", alignItems:"center", borderRadius:"8px"}}> 
+              <input
+                type="password"
+                className="password st"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                />
+              <span style={{display:"flex",justifyContent:"center", gap:"0.8rem", margin:"0 0.8rem 0 0"}}>
+                <i onClick={viewPasswordFunc} style={{cursor:"pointer",color:"black"}} class="bi bi-eye-slash" id="togglePassword"></i>
+              </span>
+            </div>
             {error &&
               <span style={{ color:"red", display: "flex", justifyContent: "center", alignContent: "center" }}>
                 {msg}

@@ -7,8 +7,6 @@ import { useState, useEffect } from "react";
 import FeaturesProvider from "./contexts/FeaturesProvider";
 
 
-import MyContext from "./contexts/MyContext";
-
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -35,9 +33,9 @@ function App() {
                   <Route path="success" element={<SuccessPage />} />
               </Route>
             <Route path="login" element={
-              <FeaturesProvider>
+              // <FeaturesProvider>
                 <Login />
-               </FeaturesProvider>
+              //  </FeaturesProvider>
             } />
             </Route>
           <Route path="forgot_password"

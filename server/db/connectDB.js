@@ -7,8 +7,8 @@ const connectDB = async () => {
     await mongoose.connect(process.env.MONGO_SECRET);
     console.log("Connected");
   } catch (error) {
-    console.log("Error: ", error.code);
+    console.log("Error: ", error);
   }
 };
 
-module.exports = connectDB;
+module.exports = connectDB
