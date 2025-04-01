@@ -14,8 +14,6 @@ function Register() {
   const hideLayoutRoute = [
     "/login",
     "/signup",
-    "/signup/verify",
-    "/signup/success",
   ];
   const shoudHideLayout = hideLayoutRoute.includes(location.pathname);
 
@@ -40,7 +38,7 @@ function Register() {
                 </content>
               </div>
             </>
-          )}
+        )}
       <ViewPasswordProvider>
         <Outlet />
       </ViewPasswordProvider>

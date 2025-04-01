@@ -9,6 +9,9 @@ import Preloader from "../components/Preloader";
 import { MyContext } from "../contexts/FeaturesProvider";
 import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
 
+import { validateLogin } from "../utils/validation";
+import { handleLoginError } from "../utils/handleError"
+
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
@@ -21,10 +24,8 @@ export default function Login() {
     setError,
     isLoading,
     setIsLoading,
-    setProfileName
-
   } = useContext(MyContext)
-  
+
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -36,7 +37,6 @@ export default function Login() {
         setIsLoading(false)
         navigate("/dashboard")
       } catch (error) {
-        // console.log(error)
         setIsLoading(false)
         localStorage.removeItem("token")
       }
@@ -48,54 +48,13 @@ export default function Login() {
   const loginUser = async (e) => {
     e.preventDefault()  
     
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s]).+$/;
-   
-    if (!loginEmail || !loginPassword) {
-      setError(true)
-      setMsg("Input field(s) cannot be left blank :)")
-      setIsLoading(false)
+    const validate = validateLogin(loginEmail, loginPassword, setError, setMsg)
 
-      setTimeout(() => {
-        setError(false)
-      }, 3000)
-      
+    if (validate) {
       return
     }
-
-    //Front-end validation
-    if (!loginEmail || !loginPassword) {
-      setError(true)
-      setMsg("Input field cannot be left blank")
-      setTimeout(() => {
-        setMsg("")
-      }, 3000)
-
-      return
-    }
-
-    if (loginPassword.length < 8) {
-      setError(true)
-      setMsg("Password length must be greater than or equal to 8")
-      setTimeout(() => {
-        setMsg("")
-      }, 3000)
-
-      return
-    }
-
-    if (!regex.test(loginPassword)) {
-      setError(true)
-      setMsg("Password must contain atleast an uppercase, lowercase and a special character")
-      setTimeout(() => {
-        setMsg("")
-      }, 3000)
-
-      return
-    }
-
-    setIsLoading(true)
     
-
+    setIsLoading(true)
     try {
       const response = await axios.post("http://localhost:5000/login", {
         email: (loginEmail).toLowerCase(),
@@ -106,7 +65,6 @@ export default function Login() {
 
       setIsLoading(false)
       console.log(response)
-      // abbreviateName()
 
       localStorage.setItem("token", response.data.token)
 
@@ -115,40 +73,14 @@ export default function Login() {
       setError(true)
       setIsLoading(false)
 
-      console.log(err)
-
-      if (!err.response || typeof err.response.data.msg !=="string" || !err.response.data) {
-        setMsg("Please check your internet connection :)")
-
-        setTimeout(() => {
-          setMsg("")
-        }, 3000)
-        
+      const handle = handleLoginError(err, setError, setMsg)
+      
+      if (handle) {
         return
       }
-
-      setMsg(err.response.data.msg)
-
-
-      setTimeout(() => {
-        setError(false)
-      }, 3000)
-      
-
     }
 
   }
-
-  const abbreviateName = (name) => {
-    let a = ""
-    name.split(" ").forEach((el, i) => {
-      a+=el[0].length > 0  ? el[0] : ""
-    })
-
-    setProfileName(a)
-  }
-
-
 
   return (
     <>
