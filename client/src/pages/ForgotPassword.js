@@ -11,12 +11,9 @@ import SuccessPage from "./SuccessPage";
 import { MyContext } from "../contexts/FeaturesProvider";
 
 
-
-
 export default function ForgotPassword() {
   const [userId, setUserId] = useState("")
   const [msg, setMsg] = useState("")
-
 
   useEffect(() => {
     setToggle('forgot-password')
@@ -32,7 +29,6 @@ export default function ForgotPassword() {
     setToggle
   } = useContext(MyContext)
 
-
   const sendCode = async (e) => {
     e.preventDefault()
 
@@ -44,7 +40,6 @@ export default function ForgotPassword() {
       }, 3000)
       return
     }
-
     
     setIsLoading(true)
     try {
@@ -64,7 +59,6 @@ export default function ForgotPassword() {
       console.log(error)
       setIsLoading(false)
 
-      
       if (!error.response || typeof error.response.data.msg !=="string" || !error.response.data) {
         setMsg("Please check your internet connection :)")
 

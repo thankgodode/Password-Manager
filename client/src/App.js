@@ -11,44 +11,40 @@ import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Setting from "./components/Setting";
 import ForgotPassword from "./pages/ForgotPassword";
-import VerifyEmail from "./pages/VerifyEmail";
-import SuccessPage from "./pages/SuccessPage";
 
 function App() {
   return (
     <Router>
       <div className="App">
-        {/* <Preloader/> */}
         <Routes>
-            <Route path="/" element={<Register />}>
-              <Route
-                  path="signup"
-                  element={
-                    <Signup/>
-                  }
-                >
-                  <Route path="verify" element={<VerifyEmail />} />
-                  <Route path="success" element={<SuccessPage />} />
-              </Route>
-            <Route path="login" element={
-              // <FeaturesProvider>
+          <Route path="/" element={<Register />}>
+            <Route
+              path="signup"
+              element={
+                <Signup/>
+              }
+            />
+            <Route 
+              path="login" 
+              element={
                 <Login />
-              //  </FeaturesProvider>
-            } />
-            </Route>
+              }
+            />
+          </Route>
           <Route path="forgot_password"
             element={
               <FeaturesProvider>
                 <ForgotPassword />
               </FeaturesProvider>
             } />
-          <Route path="dashboard" element={
-                <Dashboard />
-          }/>
+          <Route path="dashboard"
+            element={
+              <Dashboard />
+            }
+          />
         </Routes>
-        </div>
+      </div>
     </Router>
   );
 }

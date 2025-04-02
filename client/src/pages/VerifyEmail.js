@@ -1,11 +1,9 @@
 import back_icon from "../img/arrow.svg";
 import {MyContext} from "../contexts/FeaturesProvider";
 
-import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import SuccessPage from "./SuccessPage";
-import Preloader from "../components/Preloader";
+
 
 export default function VerifyEmail(props) {
   const [inputCode, setInputCode] = useState("");

@@ -195,12 +195,6 @@ function PasswordFormat(props) {
           <label for="symbols">!@#</label>
         </div>
       </div>
-      {/* <button
-        className="generate"
-        style={{ width: "100px", margin: "0.6rem 0 0 0" }}
-      >
-        Generate
-      </button> */}
     </>
   );
 }

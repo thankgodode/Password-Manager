@@ -5,6 +5,7 @@ import API from "../utils/api"
 import {useState, useEffect, useContext} from "react"
 import Preloader from "./Preloader";
 import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
+import { validateAddPassword } from "../utils/validation";
 
 
 export default function AddPassword(props) {
@@ -21,29 +22,13 @@ export default function AddPassword(props) {
   const addPassword = async (e) => {
     e.preventDefault()
 
-    if (!username || !password || !site) {
-      setError(true)
-      setMsg("Input fields cannot be left blank :(")
-
-      setTimeout(() => {
-        setError(false)
-      },3000)
-      return
-    }
-
-    if (password.length < 8) {
-      setError(true)
-      setMsg("Password cannot be less than 8 characters")
-
-      setTimeout(() => {
-        setError(false)
-      },3000)
+    const handle = validateAddPassword(username, password, site, setError, setMsg)
+    
+    if (handle) {
       return
     }
 
     setLoading(true)
-
-
     setAddBtn("Adding password...")
 
     try {
