@@ -52,10 +52,6 @@ export default function Signup() {
     setEmail(e.target.value);
   };
 
-  // const handleSignup = () => {
-  //   window.open("http://localhost:5000/auth/google", "_self");
-  // };
-
   const signup = async (e) => {
     e.preventDefault();
 
@@ -178,7 +174,12 @@ export default function Signup() {
 }
 
 function SignupUI(props) {
-  const {viewPasswordFunc} = useContext(ViewPasswordContext)
+  const { viewPasswordFunc } = useContext(ViewPasswordContext)
+  
+  
+  const handleSignup = () => {
+    window.open("http://localhost:5000/auth/google", "_self");
+  };
 
   return (
     <div className="wrap">
@@ -243,7 +244,7 @@ function SignupUI(props) {
               <label>Or register with</label>
               <span></span>
             </div>
-            <div className="google_ico">
+            <div className="google_ico" onClick={handleSignup}>
               <a className="button google">
                 <img src={google_icon} alt="Google icon" />
               </a>
