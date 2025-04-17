@@ -17,9 +17,16 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    require: true,
     minlength: 8,
     maxlength: 1024,
+    require: function () {
+      return !this.googleId
+    },
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true, // Allows multiple docs with null googleId
   },
   isVerified: {
     type: Boolean,
