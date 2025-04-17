@@ -11,6 +11,8 @@ import VerifyEmail from "./VerifyEmail";
 import SuccessPage from "./SuccessPage"
 import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
 
+import{GoogleOAuthProvider, GoogleLogin} from "@react-oauth/google"
+
 export default function Signup() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
@@ -175,10 +177,22 @@ export default function Signup() {
 
 function SignupUI(props) {
   const { viewPasswordFunc } = useContext(ViewPasswordContext)
+  const navigate = useNavigate()
   
   
-  const handleSignup = () => {
-    window.open("http://localhost:5000/auth/google", "_self");
+  const handleLoginSuccess = async(credentialResonse) => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/google", {
+        token: credentialResonse.credential
+      })
+
+      console.log("User logged in: ", res.data)
+      localStorage.setItem("token", res.data.token)
+
+      navigate("/dashboard")
+    } catch (error) {
+      console.error("Login error: ", error)
+    }
   };
 
   return (
@@ -244,11 +258,21 @@ function SignupUI(props) {
               <label>Or register with</label>
               <span></span>
             </div>
-            <div className="google_ico" onClick={handleSignup}>
+            <GoogleOAuthProvider clientId="655477468553-7mnbs4qban6fu1v2gfcs8d2g8gfqbjp5.apps.googleusercontent.com">
+              <div>
+                <GoogleLogin
+                  onSuccess={handleLoginSuccess}
+                  onError={()=>{
+                    console.log("Signup failed")
+                  }}
+                />
+              </div>
+            </GoogleOAuthProvider>
+            {/* <div className="google_ico" onClick={handleSignup}>
               <a className="button google">
                 <img src={google_icon} alt="Google icon" />
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
   )

@@ -9,6 +9,8 @@ import Preloader from "../components/Preloader";
 import { MyContext } from "../contexts/FeaturesProvider";
 import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
 
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
   const [loginPassword, setLoginPassword] = useState("")
@@ -139,16 +141,20 @@ export default function Login() {
 
   }
 
-  const abbreviateName = (name) => {
-    let a = ""
-    name.split(" ").forEach((el, i) => {
-      a+=el[0].length > 0  ? el[0] : ""
-    })
+  const handleLoginSuccess = async(credentialResonse) => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/google", {
+        token: credentialResonse.credential
+      })
 
-    setProfileName(a)
-  }
-
-
+      console.log("User logged in: ", res.data)
+      localStorage.setItem("token", res.data.token)
+      
+      navigate("/dashboard")
+    } catch (error) {
+      console.error("Login error: ", error)
+    }
+  };
 
   return (
     <>
@@ -221,9 +227,17 @@ export default function Login() {
             <label>Or login with</label>
             <span></span>
           </div>
-          <div className="google_ico">
+          <GoogleOAuthProvider clientId="655477468553-7mnbs4qban6fu1v2gfcs8d2g8gfqbjp5.apps.googleusercontent.com">
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={() => {
+                console.log("Login failed")
+              }}
+            />
+          </GoogleOAuthProvider>
+          {/* <div className="google_ico">
             <img src={google_icon} alt="Google icon" />
-          </div>
+          </div> */}
         </div>
       </div>
     </>
