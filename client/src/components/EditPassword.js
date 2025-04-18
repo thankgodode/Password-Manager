@@ -5,7 +5,7 @@ import API from "../utils/api"
 import {useState, useEffect, useContext} from "react"
 import Preloader from "./Preloader";
 import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
-
+import { validateAddPassword } from "../utils/validation";
 
 export default function EditPassword(props) {
   const [addBtn, setAddBtn] = useState("Save")
@@ -14,7 +14,7 @@ export default function EditPassword(props) {
   const [site, setSite] = useState(props.activeData.site)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
-  const { msg, setMsg } = useState("")
+  const { msg, setMsg } = useState()
 
   const {viewPasswordFunc} = useContext(ViewPasswordContext)
 
@@ -22,26 +22,11 @@ export default function EditPassword(props) {
     e.preventDefault()
     const id = props.activeData.info[props.index]._id
 
-    if (!username || !password || !site) {
-      setError(true)
-      setMsg("Input fields cannot be left blank :(")
-
-      setTimeout(() => {
-        setError(false)
-      },3000)
+    const handle = validateAddPassword(useername, password, site, setError, setMsg)
+    
+    if (handle) {
       return
     }
-
-    if (password.length < 8) {
-      setError(true)
-      setMsg("Password cannot be less than 8 characters")
-
-      setTimeout(() => {
-        setError(false)
-      },3000)
-      return
-    }
-
 
     setAddBtn("Updating password...")
     setLoading(true)
@@ -95,7 +80,7 @@ export default function EditPassword(props) {
     }
   }
 
-    const formattedData = (data) => Object.values(
+  const formattedData = (data) => Object.values(
     data.reduce((acc, { site, username, password,_id}) => {
         if (!acc[site]) {
             acc[site] = { site, info: [] };
