@@ -6,7 +6,7 @@ require("dotenv").config();
 const router = express.Router();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
-const {refreshToken, accessToken} = require("../utils/createJWT")
+const { refreshToken, accessToken } = require("../utils/createJWT");
 
 router.post("/signup/google", async (req, res) => {
     const { token } = req.body;
