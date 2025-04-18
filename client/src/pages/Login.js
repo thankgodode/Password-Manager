@@ -9,8 +9,12 @@ import Preloader from "../components/Preloader";
 import { MyContext } from "../contexts/FeaturesProvider";
 import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
 
+
+import { GoogleOAuthProvider, GoogleLogin} from "@react-oauth/google";
+
 import { validateLogin } from "../utils/validation";
 import { handleLoginError } from "../utils/handleError"
+
 
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
@@ -78,9 +82,39 @@ export default function Login() {
       if (handle) {
         return
       }
+
+
+      setMsg(err.response.data.msg)
+      setTimeout(() => {
+        setError(false)
+      }, 3000)
     }
 
   }
+
+  const handleGoogleAuth = async (credentialResonse) => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/login/google", {
+        token: credentialResonse.credential
+      })
+
+      console.log("User logged in: ", res.data)
+      localStorage.setItem("token", res.data.token)
+      
+      setIsLoading(false)
+      
+      navigate("/dashboard")
+    } catch (error) {
+      console.log(error)
+      alert(error.response.data.msg)
+      setIsLoading(false)
+    }
+  };
+
+    }
+
+  }
+
 
   return (
     <>
@@ -153,9 +187,27 @@ export default function Login() {
             <label>Or login with</label>
             <span></span>
           </div>
-          <div className="google_ico">
+          <button
+            onClick={() => setIsLoading(true)}
+            style={{
+              width: "100%",
+              border: "none",
+              background: "white",
+              margin:"1.2rem 0 0 0"
+            }}
+          >
+            <GoogleOAuthProvider clientId="655477468553-7mnbs4qban6fu1v2gfcs8d2g8gfqbjp5.apps.googleusercontent.com">
+              <GoogleLogin
+                onSuccess={handleGoogleAuth}
+                onError={() => {
+                  console.log("Login failed")
+                }}
+                />
+            </GoogleOAuthProvider>
+          </button>
+          {/* <div className="google_ico">
             <img src={google_icon} alt="Google icon" />
-          </div>
+          </div> */}
         </div>
       </div>
     </>
