@@ -26,7 +26,7 @@ app.use("/login", require("./routes/login"))
 app.use("/refresh", require("./routes/refreshToken"))
 
 // signin with google
-app.use("/api/auth", require("./routes/googleAuth"))
+app.use("/api", require("./routes/googleAuth"))
 
 
 app.use("/logout", require("./routes/logout"));
