@@ -161,6 +161,7 @@ export default function Signup() {
         handleLastName={handleLastName}
         handleEmail={handleEmail}
         handlePassword={handlePassword}
+        setIsLoading={setIsLoading}
         err={error}
         msg={msg}
       />}
@@ -180,18 +181,27 @@ function SignupUI(props) {
   const navigate = useNavigate()
   
   
-  const handleLoginSuccess = async(credentialResonse) => {
+  const handleGooleAuth = async (credentialResonse) => {
+    props.setIsLoading(true)
+    
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/google", {
+      const res = await axios.post("http://localhost:5000/api/signup/google", {
         token: credentialResonse.credential
       })
 
-      console.log("User logged in: ", res.data)
+      if (res.data.exist) {
+        alert("User with given email already exist :)")
+        props.setIsLoading(false)
+        return
+      }
+      
       localStorage.setItem("token", res.data.token)
-
+      
+      props.setIsLoading(false)
       navigate("/dashboard")
     } catch (error) {
-      console.error("Login error: ", error)
+      alert(error.response.data.msg)
+      props.setIsLoading(false)
     }
   };
 
@@ -258,16 +268,24 @@ function SignupUI(props) {
               <label>Or register with</label>
               <span></span>
             </div>
-            <GoogleOAuthProvider clientId="655477468553-7mnbs4qban6fu1v2gfcs8d2g8gfqbjp5.apps.googleusercontent.com">
-              <div>
+            <button
+              onClick={() => props.setIsLoading(true)}
+              style={{
+                width: "100%",
+                border: "none",
+                background: "white",
+                margin:"1.2rem 0 0 0"
+              }}
+            >
+              <GoogleOAuthProvider clientId="655477468553-7mnbs4qban6fu1v2gfcs8d2g8gfqbjp5.apps.googleusercontent.com">
                 <GoogleLogin
-                  onSuccess={handleLoginSuccess}
-                  onError={()=>{
-                    console.log("Signup failed")
+                  onSuccess={handleGooleAuth}
+                  onError={() => {
+                    console.log("Login failed")
                   }}
-                />
-              </div>
-            </GoogleOAuthProvider>
+                  />
+              </GoogleOAuthProvider>
+            </button>
             {/* <div className="google_ico" onClick={handleSignup}>
               <a className="button google">
                 <img src={google_icon} alt="Google icon" />
