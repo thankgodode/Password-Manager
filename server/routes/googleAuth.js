@@ -8,9 +8,8 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 const {refreshToken, accessToken} = require("../utils/createJWT")
 
-router.post("/google", async (req, res) => {
+router.post("/signup/google", async (req, res) => {
     const { token } = req.body;
-    console.log("Google T: ", token)
 
     try {
         const ticket = await client.verifyIdToken({
@@ -45,8 +44,30 @@ router.post("/google", async (req, res) => {
                 // maxAge:24*60*60*1000
             })
 
-            return res.status(201).json({ msg: "Successfully logged in user!", token:aToken, user });
-        } else {
+            return res.status(201).json({ msg: "Successfully logged in user!", token:aToken, exist:false});
+        } 
+        
+        res.status(404).json({msg:"User profile already exist", exist:true})
+    } catch (err) {
+        res.status(400).json({message:"Google authentication failed"})
+    }
+})
+
+router.post("/login/google", async (req, res) => {
+    const { token } = req.body;
+    
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        })
+
+        const payload = ticket.getPayload()
+        const { email, name, picture } = payload;
+
+        let user = await User.findOne({ email: email })
+        
+        if (user) {
             const rToken = refreshToken(user.email);
             const aToken = accessToken(user.email);
             
@@ -61,9 +82,10 @@ router.post("/google", async (req, res) => {
                 // maxAge:24*60*60*1000
             })
 
-            return res.status(201).json({ msg: "Successfully logged in user!", token:aToken, user });
+           return res.status(201).json({ msg: "Successfully logged in user!", token:aToken, user });
         }
 
+        res.status(404).json({msg:"User profile does not exist"})
     } catch (err) {
         res.status(400).json({message:"Google authentication failed", error:err})
     }
