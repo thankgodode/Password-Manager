@@ -11,7 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Setting from "./components/Setting";
+// import Setting from "./components/Setting";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import SuccessPage from "./pages/SuccessPage";
@@ -24,27 +24,27 @@ function App() {
         <Routes>
             <Route path="/" element={<Register />}>
               <Route
-                  path="signup"
+                  path="signup/*"
                   element={
                     <Signup/>
                   }
                 >
-                  <Route path="verify" element={<VerifyEmail />} />
-                  <Route path="success" element={<SuccessPage />} />
+                  <Route path="verify/*" element={<VerifyEmail />} />
+                  <Route path="success/*" element={<SuccessPage />} />
               </Route>
-            <Route path="login" element={
+            <Route path="login/*" element={
               // <FeaturesProvider>
                 <Login />
               //  </FeaturesProvider>
             } />
             </Route>
-          <Route path="forgot_password"
+          <Route path="forgot_password/*"
             element={
               <FeaturesProvider>
                 <ForgotPassword />
               </FeaturesProvider>
             } />
-          <Route path="dashboard" element={
+          <Route path="dashboard/*" element={
                 <Dashboard />
           }/>
         </Routes>
