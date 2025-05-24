@@ -1,3 +1,5 @@
+/*global chrome*/
+
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
 import { useState, useEffect, useContext } from "react";
@@ -29,10 +31,12 @@ export default function Login() {
 
   useEffect(() => {
     setIsLoading(true)
-
+    
     const checkAuth = async () => {
       try {
         const auth = await API.get("/dashboard");
+        chrome.runtime.sendMessage({ type: "AUTH_COMPLETE", token: auth.data.user.token })
+        
         setIsLoading(false)
         navigate("/dashboard")
       } catch (error) {
@@ -95,7 +99,6 @@ export default function Login() {
 
     setIsLoading(true)
     
-
     try {
       const response = await axios.post("http://localhost:5000/login", {
         email: (loginEmail).toLowerCase(),
@@ -104,12 +107,13 @@ export default function Login() {
         withCredentials: true
       })
 
+      
       setIsLoading(false)
       console.log(response)
-      // abbreviateName()
 
+      const data = response.data.token
+      
       localStorage.setItem("token", response.data.token)
-
       navigate("/dashboard")
     } catch (err) {
       setError(true)

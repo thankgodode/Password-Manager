@@ -1,7 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes, BrowserRouter } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useState, useEffect } from "react";
 import FeaturesProvider from "./contexts/FeaturesProvider";
@@ -18,38 +18,38 @@ import SuccessPage from "./pages/SuccessPage";
 
 function App() {
   return (
-    <Router>
+    <HashRouter>
       <div className="App">
         {/* <Preloader/> */}
         <Routes>
             <Route path="/" element={<Register />}>
               <Route
-                  path="signup/*"
+                  path="signup"
                   element={
                     <Signup/>
                   }
                 >
-                  <Route path="verify/*" element={<VerifyEmail />} />
-                  <Route path="success/*" element={<SuccessPage />} />
+                  <Route path="verify" element={<VerifyEmail />} />
+                  <Route path="success" element={<SuccessPage />} />
               </Route>
-            <Route path="login/*" element={
+            <Route path="login" element={
               // <FeaturesProvider>
                 <Login />
               //  </FeaturesProvider>
             } />
             </Route>
-          <Route path="forgot_password/*"
+          <Route path="forgot_password"
             element={
               <FeaturesProvider>
                 <ForgotPassword />
               </FeaturesProvider>
             } />
-          <Route path="dashboard/*" element={
+          <Route path="dashboard" element={
                 <Dashboard />
           }/>
         </Routes>
         </div>
-    </Router>
+    </HashRouter>
   );
 }
 

@@ -1,6 +1,19 @@
 /*global chrome*/
-console.log("Content script loaded")
-// chrome.runtime.sendMessage({type:"PAGE_LOADED"})
-chrome.runtime.sendMessage({ action: "greet" }, (response) => {
-    console.log(response.reply)
+
+var data =""
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === "API_SUCCESS") {
+        console.log("Received in content script: ", message.payload)
+        data = message.payload
+
+        sendResponse({ status: "received" })
+        
+        return true;
+    }
+})
+
+chrome.runtime.sendMessage("<ifhimppppnnffofkmagbggildngckaol>", {
+    type: "LOGIN",
+    token: data
 })
