@@ -9,6 +9,7 @@ import { Router } from "react-router-dom";
 import { useState,useEffect } from "react";
 import FeaturesProvider from "../contexts/FeaturesProvider";
 import ViewPasswordProvider from "../contexts/ViewPasswordContext";
+import API from "../utils/api";
 
 function Register() {
   const location = useLocation();
@@ -17,10 +18,14 @@ function Register() {
   useEffect(() => {
     console.log("Checking extension")
     if (typeof chrome !== undefined && chrome.tabs) {
-      chrome.storage.local.get(["token"], (result) => {
-        console.log("Auth extension")
-        if (result.token) {
-          navigate("http://localhost:3000/dashboard")
+      chrome.storage.local.get("token", async (result) => {
+        try {
+          if (result.token) {
+            const auth = await API.get("/dashboard")
+            navigate("/dashboard")
+          }
+        } catch (error) {
+          return          
         }
       })
     }

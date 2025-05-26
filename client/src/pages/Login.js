@@ -35,7 +35,7 @@ export default function Login() {
     const checkAuth = async () => {
       try {
         const auth = await API.get("/dashboard");
-        chrome.runtime.sendMessage({ type: "AUTH_COMPLETE", token: auth.data.user.token })
+        chrome.runtime.sendMessage({ type: "LOGIN_SUCCESS", token: auth.data.user.token })
         
         setIsLoading(false)
         navigate("/dashboard")
@@ -109,11 +109,22 @@ export default function Login() {
 
       
       setIsLoading(false)
-      console.log(response)
-
       const data = response.data.token
       
       localStorage.setItem("token", response.data.token)
+
+      chrome.runtime.sendMessage(
+        "ifhimppppnnffofkmagbggildngckaol",
+        {
+          type: "LOGIN_SUCCESS",
+          token: data
+        },
+        (response) => {
+          console.log("Extension response ", response)
+        }
+      )
+      
+      
       navigate("/dashboard")
     } catch (err) {
       setError(true)
