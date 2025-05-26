@@ -1,7 +1,7 @@
 /*global chrome*/
 
 chrome.runtime.onMessageExternal.addListener((message, sendResponse) => {
-    if (message.type == "LOGIN") {
+    if (message.type == "LOGIN_SUCCESS") {
         chrome.storage.local.set({ token: message.token }, () => {
             console.log("Token saved")
             sendResponse({success:true})
