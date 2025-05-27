@@ -1,7 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 
-import { HashRouter, Route, Routes, BrowserRouter } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useState, useEffect } from "react";
 import FeaturesProvider from "./contexts/FeaturesProvider";
@@ -11,14 +11,14 @@ import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-// import Setting from "./components/Setting";
+import Setting from "./components/Setting";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import SuccessPage from "./pages/SuccessPage";
 
 function App() {
   return (
-    <HashRouter>
+    <Router>
       <div className="App">
         {/* <Preloader/> */}
         <Routes>
@@ -49,7 +49,7 @@ function App() {
           }/>
         </Routes>
         </div>
-    </HashRouter>
+    </Router>
   );
 }
 
