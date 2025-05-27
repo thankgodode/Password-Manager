@@ -14,8 +14,7 @@ function Register() {
   const hideLayoutRoute = [
     "/login",
     "/signup",
-    "/signup/verify",
-    "/signup/success",
+    "/forgot-password"
   ];
   const shoudHideLayout = hideLayoutRoute.includes(location.pathname);
 

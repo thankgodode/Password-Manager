@@ -11,27 +11,16 @@ import SuccessPage from "./SuccessPage";
 import { MyContext } from "../contexts/FeaturesProvider";
 
 
-
-
 export default function ForgotPassword() {
+  const [toggle,setToggle] = useState("")
   const [userId, setUserId] = useState("")
   const [msg, setMsg] = useState("")
-
-
+  const [email,setEmail] = useState("")
+  const [isLoading, setIsLoading] = useState("")
+  
   useEffect(() => {
-    setToggle('forgot-password')
+    setToggle("forgot-password")
   },[])
-
-  const {
-    email, 
-    setEmail,
-    timeoutFunc,
-    isLoading,
-    setIsLoading,
-    toggle,
-    setToggle
-  } = useContext(MyContext)
-
 
   const sendCode = async (e) => {
     e.preventDefault()
@@ -54,7 +43,6 @@ export default function ForgotPassword() {
         { withCredentials: true }
       )
 
-      console.log(send)
       setUserId(send.data.user._id)
 
       setToggle("verify")

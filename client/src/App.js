@@ -1,7 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 
-import { BrowserRouter as Router, Route, Routes, createBrowserRouter } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, createBrowserRouter, RouterProvider } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useState, useEffect } from "react";
 import FeaturesProvider from "./contexts/FeaturesProvider";
@@ -32,50 +32,21 @@ const router = createBrowserRouter([
       {
         path: "forgot-password",
         Component: ForgotPassword
-      },
-      {
-        path: "dashboard",
-        Component: Dashboard
       }
-
     ]
-  }
+  },
+  {
+    path: "/dashboard",
+    Component: Dashboard
+  },
+
 ])
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        {/* <Preloader/> */}
-        <Routes>
-            <Route path="/" element={<Register />}>
-              <Route
-                  path="signup"
-                  element={
-                    <Signup/>
-                  }
-                >
-                  <Route path="verify" element={<VerifyEmail />} />
-                  <Route path="success" element={<SuccessPage />} />
-              </Route>
-            <Route path="login" element={
-              // <FeaturesProvider>
-                <Login />
-              //  </FeaturesProvider>
-            } />
-            </Route>
-          <Route path="forgot_password"
-            element={
-              <FeaturesProvider>
-                <ForgotPassword />
-              </FeaturesProvider>
-            } />
-          <Route path="dashboard" element={
-                <Dashboard />
-          }/>
-        </Routes>
-        </div>
-    </Router>
+    <div className="App">
+      <RouterProvider router={router} />
+    </div>
   );
 }
 

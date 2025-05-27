@@ -1,7 +1,7 @@
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
 import { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 import API from "../utils/api"
 import axios from "axios"
@@ -205,7 +205,7 @@ export default function Login() {
                 width: "100%",
               }}
             >
-              <Link to="/forgot_password">
+              <Link to="/forgot-password">
                 <h4
                   style={{
                     fontSize: "0.9rem",
@@ -248,6 +248,7 @@ export default function Login() {
           </div> */}
         </div>
       </div>
+      <Outlet/>
     </>
   );
 }
