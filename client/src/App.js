@@ -1,7 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, HashRouter } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useState, useEffect } from "react";
 import FeaturesProvider from "./contexts/FeaturesProvider";
@@ -18,7 +18,7 @@ import SuccessPage from "./pages/SuccessPage";
 
 function App() {
   return (
-    <Router>
+    <HashRouter>
       <div className="App">
         {/* <Preloader/> */}
         <Routes>
@@ -49,7 +49,7 @@ function App() {
           }/>
         </Routes>
         </div>
-    </Router>
+    </HashRouter>
   );
 }
 
