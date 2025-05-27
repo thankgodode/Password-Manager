@@ -31,7 +31,7 @@ const router = createBrowserRouter([
       },
       {
         path: "forgot-password",
-        Component: ForgotPassword
+        element:<FeaturesProvider><ForgotPassword/></FeaturesProvider> 
       }
     ]
   },
