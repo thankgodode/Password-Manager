@@ -1,3 +1,5 @@
+/*global chrome*/
+
 import back_icon from "../img/arrow.svg";
 import { Link, useNavigate } from "react-router-dom";
 import {useState} from "react"
@@ -7,7 +9,6 @@ import Preloader from "./Preloader";
 
 export default function Setting(props) {
   const [msg, setMsg] = useState("")
-  const [err, setErr] = useState("")
 
   const navigate = useNavigate()
 
@@ -17,10 +18,19 @@ export default function Setting(props) {
       setIsLoading(true)
       const auth = await API.get("/logout",{withCredentials:true});
       localStorage.removeItem("token")
+      chrome.runtime.sendMessage(
+        "ifhimppppnnffofkmagbggildngckaol",
+        {
+          type:"LOGOUT_SUCCESS"
+        }, 
+        (response) => {
+          console.log("Response ", response)
+        }
+      )
 
       setMsg("User successfully logged out!")
       setIsLoading(false)
-      navigate("/register")
+      navigate("/")
 
     } catch (error) {
       setIsLoading(false)

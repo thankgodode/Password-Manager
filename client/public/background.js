@@ -10,3 +10,17 @@ chrome.runtime.onMessageExternal.addListener((message, sendResponse) => {
         return true
     }
 })
+
+chrome.runtime.onMessageExternal.addListener((message, sendResponse) => {
+    if (message.type == "LOGOUT_SUCCESS") {
+        chrome.storage.local.remove("token", () => {
+            var error = chrome.runtime.lastError;
+
+            if (error) {
+                console.error(error)
+            }
+
+            sendResponse({success:true})
+        })
+    }
+})
