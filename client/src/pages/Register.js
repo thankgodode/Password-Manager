@@ -4,15 +4,33 @@ import logo from "../img/icon_48.png";
 import Login from "./Login";
 import Signup from "./Signup";
 
-import { Link, Outlet, useLocation, Navigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Router } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FeaturesProvider from "../contexts/FeaturesProvider";
 import ViewPasswordProvider from "../contexts/ViewPasswordContext";
+import API from "../utils/api";
 
 function Register() {
-  const location = useLocation();
+  const navigate = useNavigate()
 
+  useEffect(() => {
+    console.log("Checking extension")
+    if (typeof chrome !== undefined && chrome.tabs) {
+      chrome.storage.local.get("token", async (result) => {
+        try {
+          if (result.token) {
+            const auth = await API.get("/dashboard")
+            navigate("/dashboard")
+          }
+        } catch (error) {
+          return          
+        }
+      })
+    }
+  },[])
+  
+  const location = useLocation();
   const hideLayoutRoute = [
     "/login",
     "/signup",
