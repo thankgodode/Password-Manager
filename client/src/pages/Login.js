@@ -163,7 +163,7 @@ export default function Login() {
       chrome.runtime.sendMessage(
         "ifhimppppnnffofkmagbggildngckaol",
         {
-          type: "LOGIN_SUCCESS",
+          type: "GOOGLE_LOGIN",
           token: data
         },
         (response) => {

@@ -17,16 +17,13 @@ export default function Setting(props) {
     setIsLoading(true)
     try {
       setIsLoading(true)
-      const auth = await API.get("/logout",{withCredentials:true});
+      const auth = await API.get("/logout", {withCredentials:true});
       localStorage.removeItem("token")
 
       chrome.runtime.sendMessage(
         "ifhimppppnnffofkmagbggildngckaol",
         {
           type:"LOGOUT_SUCCESS"
-        }, 
-        (response) => {
-          console.log("Response ", response)
         }
       )
 
