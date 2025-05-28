@@ -19,6 +19,7 @@ function Register() {
     console.log("Checking extension")
     if (typeof chrome !== undefined && chrome.tabs) {
       chrome.storage.local.get("token", async (result) => {
+        console.log(result)
         try {
           if (result.token) {
             const auth = await API.get("/dashboard")
