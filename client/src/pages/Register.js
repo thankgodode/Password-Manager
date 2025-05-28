@@ -13,6 +13,7 @@ import API from "../utils/api";
 
 function Register() {
   const navigate = useNavigate()
+  const location = useLocation();
 
   useEffect(() => {
     console.log("Checking extension")
@@ -30,7 +31,6 @@ function Register() {
     }
   },[])
   
-  const location = useLocation();
   const hideLayoutRoute = [
     "/login",
     "/signup",
