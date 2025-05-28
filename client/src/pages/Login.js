@@ -109,6 +109,10 @@ export default function Login() {
       // abbreviateName()
 
       localStorage.setItem("token", response.data.token)
+      chrome.runtime.sendMessage(
+        "ifhimppppnnffofkmagbggildngckaol",
+        (result)
+      )
 
       navigate("/dashboard")
     } catch (err) {
