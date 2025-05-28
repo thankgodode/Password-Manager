@@ -20,9 +20,17 @@ function Register() {
   ];
   const shoudHideLayout = hideLayoutRoute.includes(location.pathname);
 
-  const loginBtn = () => {
+  const handleSignup = () => {
     if (typeof chrome !== undefined && chrome.tabs) {
-      Navigate("/login")
+      chrome.tabs.create({ url: "http://localhost:3000/#/signup" })
+      window.close()
+    }
+  }
+
+  const handleLogin = () => {
+    if (typeof chrome !== undefined && chrome.tabs) {
+      chrome.tabs.create({ url: "http://localhost:3000/#/login" })
+      window.close()
     }
   }
 
@@ -39,10 +47,10 @@ function Register() {
                     <img src={logo} />
                   </div>
                   <Link to="signup">
-                    <button className="btn signup">Signup</button>
+                  <button className="btn signup" onClick={handleSignup}>Signup</button>
                   </Link>
                   <Link to="login">
-                    <button className="btn login">Login</button>
+                    <button className="btn login" onClick={handleLogin}>Login</button>
                   </Link>
                 </content>
               </div>
