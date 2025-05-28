@@ -32,7 +32,7 @@ export default function Setting(props) {
 
       setMsg("User successfully logged out!")
       setIsLoading(false)
-      navigate("/login")
+      navigate("/")
 
     } catch (error) {
       setIsLoading(false)
