@@ -1,8 +1,10 @@
+/*global chrome*/
+
 import logo from "../img/icon_48.png";
 import Login from "./Login";
 import Signup from "./Signup";
 
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, Navigate } from "react-router-dom";
 import { Router } from "react-router-dom";
 import { useState } from "react";
 import FeaturesProvider from "../contexts/FeaturesProvider";
@@ -17,6 +19,12 @@ function Register() {
     "/forgot-password"
   ];
   const shoudHideLayout = hideLayoutRoute.includes(location.pathname);
+
+  const loginBtn = () => {
+    if (typeof chrome !== undefined && chrome.tabs) {
+      Navigate("/login")
+    }
+  }
 
   return (
     <>
