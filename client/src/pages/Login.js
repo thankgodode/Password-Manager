@@ -1,3 +1,5 @@
+/*global chrome*/
+
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
 import { useState, useEffect, useContext } from "react";
@@ -104,6 +106,8 @@ export default function Login() {
         withCredentials: true
       })
 
+      const data = response.data.token;
+
       setIsLoading(false)
       console.log(response)
       // abbreviateName()
@@ -111,7 +115,13 @@ export default function Login() {
       localStorage.setItem("token", response.data.token)
       chrome.runtime.sendMessage(
         "ifhimppppnnffofkmagbggildngckaol",
-        (result)
+        {
+          type: "LOGIN_SUCCESS",
+          token: data
+        },
+        (response) => {
+          console.log("Response ", response)
+        }
       )
 
       navigate("/dashboard")
