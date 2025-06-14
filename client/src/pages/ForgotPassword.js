@@ -14,11 +14,11 @@ import { MyContext } from "../contexts/FeaturesProvider";
 export default function ForgotPassword() {
   const [userId, setUserId] = useState("")
   const [msg, setMsg] = useState("")
-
+  
   useEffect(() => {
-    setToggle('forgot-password')
-  },[])
-
+    setToggle("forgot-password")
+  }, [])
+  
   const {
     email, 
     setEmail,
@@ -49,7 +49,6 @@ export default function ForgotPassword() {
         { withCredentials: true }
       )
 
-      console.log(send)
       setUserId(send.data.user._id)
 
       setToggle("verify")

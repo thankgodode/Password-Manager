@@ -1,3 +1,5 @@
+/*global chrome*/
+
 import setting_ico from "../img/setting.svg";
 import { useState,useEffect } from "react";
 import GeneratePassword from "../components/GeneratePassword";

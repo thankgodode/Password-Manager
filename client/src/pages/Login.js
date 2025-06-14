@@ -1,7 +1,9 @@
+/*global chrome*/
+
 import back_icon from "../img/arrow.svg";
 import google_icon from "../img/google.svg";
 import { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 import API from "../utils/api"
 import axios from "axios"
@@ -67,10 +69,22 @@ export default function Login() {
         withCredentials: true
       })
 
+      const data = response.data.token;
+
       setIsLoading(false)
       console.log(response)
 
       localStorage.setItem("token", response.data.token)
+      chrome.runtime.sendMessage(
+        "ifhimppppnnffofkmagbggildngckaol",
+        {
+          type: "LOGIN_SUCCESS",
+          token: data
+        },
+        (response) => {
+          console.log("Response ", response)
+        }
+      )
 
       navigate("/dashboard")
     } catch (err) {
@@ -98,8 +112,21 @@ export default function Login() {
         token: credentialResonse.credential
       })
 
-      console.log("User logged in: ", res.data)
+      
+      const data = res.data.token
+
       localStorage.setItem("token", res.data.token)
+
+      chrome.runtime.sendMessage(
+        "ifhimppppnnffofkmagbggildngckaol",
+        {
+          type: "GOOGLE_LOGIN",
+          token: data
+        },
+        (response) => {
+          console.log("Response ", response)
+        }
+      )
       
       setIsLoading(false)
       
@@ -167,7 +194,7 @@ export default function Login() {
                 width: "100%",
               }}
             >
-              <Link to="/forgot_password">
+              <Link to="/forgot-password">
                 <h4
                   style={{
                     fontSize: "0.9rem",
@@ -210,6 +237,7 @@ export default function Login() {
           </div> */}
         </div>
       </div>
+      <Outlet/>
     </>
   );
 }
