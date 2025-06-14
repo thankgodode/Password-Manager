@@ -155,9 +155,9 @@ export default function Login() {
         token: credentialResonse.credential
       })
 
+      
       const data = res.data.token
 
-      console.log("User logged in: ", res.data)
       localStorage.setItem("token", res.data.token)
 
       chrome.runtime.sendMessage(
