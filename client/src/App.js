@@ -11,10 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Setting from "./components/Setting";
 import ForgotPassword from "./pages/ForgotPassword";
-import VerifyEmail from "./pages/VerifyEmail";
-import SuccessPage from "./pages/SuccessPage";
 
 const router = createHashRouter([
   {
@@ -47,6 +44,37 @@ function App() {
     <div className="App">
       <RouterProvider router={router} />
     </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Register />}>
+            <Route
+              path="signup"
+              element={
+                <Signup/>
+              }
+            />
+            <Route 
+              path="login" 
+              element={
+                <Login />
+              }
+            />
+          </Route>
+          <Route path="forgot_password"
+            element={
+              <FeaturesProvider>
+                <ForgotPassword />
+              </FeaturesProvider>
+            } />
+          <Route path="dashboard"
+            element={
+              <Dashboard />
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

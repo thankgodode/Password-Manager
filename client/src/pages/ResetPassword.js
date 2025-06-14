@@ -15,14 +15,7 @@ export default function ResetPassword(props) {
   const [passwordChanged, setPasswordChanged] = useState(false)
 
   const {
-      minute,
-      second,
-      timeoutFunc,
-      timedout,
-      clearTimeout,
-      setToggle,
       setIsLoading,
-      email,
       msg,
       setMsg
   
