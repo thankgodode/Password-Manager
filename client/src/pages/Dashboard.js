@@ -20,26 +20,26 @@ export default function Dashboard() {
 
   const navigate = useNavigate()
 
-    useEffect(() => {
-        console.log("Dashboard page...")
-        setIsLoading(true)
-        const checkAuth = async () => {
-          try {
-            const auth = await API.get("/dashboard");
-            setProfileName(auth.data.user.name)
+  useEffect(() => {
+      console.log("Dashboard page...")
+      setIsLoading(true)
+      const checkAuth = async () => {
+        try {
+          const auth = await API.get("/dashboard");
+          setProfileName(auth.data.user.name)
 
-            setToggleModal("dashboard")
-            setIsLoading(false)
-            console.log("User authorization successfully")
-          } catch (error) {
-            console.log(error)
-            localStorage.removeItem("token")
-            navigate("/login")  
-          }
+          setToggleModal("dashboard")
+          setIsLoading(false)
+          console.log("User authorization successfully")
+        } catch (error) {
+          console.log(error)
+          localStorage.removeItem("token")
+          navigate("/login")  
         }
-  
-      checkAuth()
-    }, [navigate])
+      }
+
+    checkAuth()
+  }, [navigate])
   
   function toggleSavedPassword() {
     setToggleModal("saved");

@@ -1,8 +1,6 @@
 /*global chrome*/
 
 import logo from "../img/icon_48.png";
-import Login from "./Login";
-import Signup from "./Signup";
 
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Router } from "react-router-dom";
@@ -10,26 +8,41 @@ import { useState, useEffect } from "react";
 import FeaturesProvider from "../contexts/FeaturesProvider";
 import ViewPasswordProvider from "../contexts/ViewPasswordContext";
 import API from "../utils/api";
+import Preloader from "../components/Preloader";
 
 function Register() {
+  const [isLoading, setIsLoading] = useState(true)
+  
   const navigate = useNavigate()
   const location = useLocation();
 
   useEffect(() => {
     console.log("Checking extension")
-    if (typeof chrome !== undefined && chrome.tabs) {
-      chrome.storage.local.get("token", async (result) => {
-        try {
-          if (result.token) {
-            console.log("Logged in!")
-            const auth = await API.get("/dashboard")
-            navigate("/dashboard")
-          }
-        } catch (error) {
-          return          
-        }
-      })
+    // if (typeof chrome !== undefined && chrome.tabs) {
+    //   chrome.storage.local.get("token", async (result) => {
+    //     try {
+    //       if (result.token) {
+    //         console.log("Logged in!")
+    //         const auth = await API.get("/dashboard")
+    //         navigate("/dashboard")
+    //       }
+    //     } catch (error) {
+    //       return          
+    //     }
+    //   })
+    // }
+    const checkAuth = async () => {
+      try {
+        const auth = await API.get("/dashboard");
+        navigate("/dashboard")
+        setIsLoading(false)
+      } catch (error) {
+        console.log(error)
+        setIsLoading(false)
+      }
     }
+  
+    checkAuth()
   },[])
   
   const hideLayoutRoute = [
@@ -53,8 +66,31 @@ function Register() {
     }
   }
 
+  const chromePreloader = () => {
+    if (typeof chrome !== undefined && chrome.tabs) {
+      return (
+        <>
+          {
+            isLoading &&
+            <content
+              style={{
+                zIndex: 4,
+                background: "white",
+                width: "100%",
+                height: "100%"
+              }}
+            >
+              <Preloader/>
+            </content>
+          }
+        </>
+      )
+    }
+  }
+
   return (
     <>
+      {chromePreloader()}
       <FeaturesProvider>
           {!shoudHideLayout && (
             <>

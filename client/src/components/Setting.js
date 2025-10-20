@@ -6,6 +6,7 @@ import {useState} from "react"
 
 import API from "../utils/api";
 import Preloader from "./Preloader";
+import axios from "axios";
 
 export default function Setting(props) {
   const [msg, setMsg] = useState("")
@@ -17,8 +18,9 @@ export default function Setting(props) {
     setIsLoading(true)
     try {
       setIsLoading(true)
-      const auth = await API.get("/logout", {withCredentials:true});
-      localStorage.removeItem("token")
+      const auth = await axios.get("http://localhost:5000/logout", {withCredentials:true});
+      
+      // localStorage.removeItem("token")
 
       chrome.runtime.sendMessage(
         "ifhimppppnnffofkmagbggildngckaol",

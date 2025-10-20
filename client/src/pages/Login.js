@@ -51,18 +51,6 @@ export default function Login() {
     e.preventDefault()  
     
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s]).+$/;
-   
-    if (!loginEmail || !loginPassword) {
-      setError(true)
-      setMsg("Input field(s) cannot be left blank :)")
-      setIsLoading(false)
-
-      setTimeout(() => {
-        setError(false)
-      }, 3000)
-      
-      return
-    }
 
     //Front-end validation
     if (!loginEmail || !loginPassword) {
@@ -70,6 +58,7 @@ export default function Login() {
       setMsg("Input field cannot be left blank")
       setTimeout(() => {
         setMsg("")
+        setError(false)
       }, 3000)
 
       return
@@ -97,7 +86,6 @@ export default function Login() {
 
     setIsLoading(true)
     
-
     try {
       const response = await axios.post("http://localhost:5000/login", {
         email: (loginEmail).toLowerCase(),
@@ -112,7 +100,7 @@ export default function Login() {
       console.log(response)
       // abbreviateName()
 
-      localStorage.setItem("token", response.data.token)
+      // localStorage.setItem("token", response.data.token)
       chrome.runtime.sendMessage(
         "ifhimppppnnffofkmagbggildngckaol",
         {
@@ -128,8 +116,6 @@ export default function Login() {
     } catch (err) {
       setError(true)
       setIsLoading(false)
-
-      console.log(err)
 
       if (!err.response || typeof err.response.data.msg !=="string" || !err.response.data) {
         setMsg("Please check your internet connection :)")
@@ -153,9 +139,10 @@ export default function Login() {
     try {
       const res = await axios.post("http://localhost:5000/api/login/google", {
         token: credentialResonse.credential
+      }, {
+        withCredentials:true
       })
 
-      
       const data = res.data.token
 
       localStorage.setItem("token", res.data.token)
@@ -244,6 +231,7 @@ export default function Login() {
                 </h4>
               </Link>
             </div>
+            <button type="submit" onSubmit="console.log('Clicking!')">Click</button>
             <button className="createBtn st" onClick={loginUser}>Login</button>
           </form>
           {error && <h4 style={{color:"red",textAlign:"center"}}>{msg}</h4>}

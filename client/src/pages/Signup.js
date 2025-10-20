@@ -101,8 +101,8 @@ export default function Signup() {
       return
     }
     
-
     setIsLoading(true);
+    
     try {
       const response = await axios.post("http://localhost:5000/register", {
         name: `${firstName} ${lastName}`,
@@ -187,6 +187,8 @@ function SignupUI(props) {
     try {
       const res = await axios.post("http://localhost:5000/api/signup/google", {
         token: credentialResonse.credential
+      }, {
+        withCredentials:true
       })
 
       if (res.data.exist) {
@@ -207,91 +209,91 @@ function SignupUI(props) {
 
   return (
     <div className="wrap">
-          <Link to="/">
-            <div className="back_ico">
-              <img src={back_icon} alt="Back icon" className="back" />
-            </div>
-          </Link>
-          <div className="figure">
-            <div class="title">
-              <h1>Create account</h1>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: ".5rem",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <span className="line large"></span>
-                <span className="line small"></span>
-              </div>
-            </div>
-            <form className="form">
-              <input
-                type="text"
-                className="first_name st"
-                placeholder="First name"
-                onChange={props.handleFirstName}
-              />
-              <input
-                type="text"
-                className="last_name st"
-                placeholder="Lastname name"
-                onChange={props.handleLastName}
-              />
-              <input
-                type="email"
-                className="email st"
-                placeholder="Email"
-                onChange={props.handleEmail}
-              />
-              <div style={{display:"flex",justifyContent:"space-between", background:"#e3d9ff", alignItems:"center", borderRadius:"8px"}}> 
-              <input
-                type="password"
-                className="password st"
-                placeholder="Password"
-                onChange={props.handlePassword}
-                />
-              <span style={{display:"flex",justifyContent:"center", gap:"0.8rem", margin:"0 0.8rem 0 0"}}>
-                <i onClick={viewPasswordFunc} style={{cursor:"pointer",color:"black"}} class="bi bi-eye-slash" id="togglePassword"></i>
-              </span>
-            </div>
-              <button className="createBtn st" onClick={props.signup}>
-                Create account
-              </button>
-              {props.err && <h4 style={{ color: "red", textAlign: "center" }}>{props.msg}</h4>}
-            </form>
-            <div className="register_with">
-              <span></span>
-              <label>Or register with</label>
-              <span></span>
-            </div>
-            <button
-              onClick={() => props.setIsLoading(true)}
-              style={{
-                width: "100%",
-                border: "none",
-                background: "white",
-                margin:"1.2rem 0 0 0"
-              }}
-            >
-              <GoogleOAuthProvider clientId="655477468553-7mnbs4qban6fu1v2gfcs8d2g8gfqbjp5.apps.googleusercontent.com">
-                <GoogleLogin
-                  onSuccess={handleGooleAuth}
-                  onError={() => {
-                    console.log("Login failed")
-                  }}
-                  />
-              </GoogleOAuthProvider>
-            </button>
-            {/* <div className="google_ico" onClick={handleSignup}>
-              <a className="button google">
-                <img src={google_icon} alt="Google icon" />
-              </a>
-            </div> */}
+      <Link to="/">
+        <div className="back_ico">
+          <img src={back_icon} alt="Back icon" className="back" />
+        </div>
+      </Link>
+      <div className="figure">
+        <div class="title">
+          <h1>Create account</h1>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: ".5rem",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <span className="line large"></span>
+            <span className="line small"></span>
           </div>
         </div>
+        <form className="form">
+          <input
+            type="text"
+            className="first_name st"
+            placeholder="First name"
+            onChange={props.handleFirstName}
+          />
+          <input
+            type="text"
+            className="last_name st"
+            placeholder="Lastname name"
+            onChange={props.handleLastName}
+          />
+          <input
+            type="email"
+            className="email st"
+            placeholder="Email"
+            onChange={props.handleEmail}
+          />
+          <div style={{display:"flex",justifyContent:"space-between", background:"#e3d9ff", alignItems:"center", borderRadius:"8px"}}> 
+          <input
+            type="password"
+            className="password st"
+            placeholder="Password"
+            onChange={props.handlePassword}
+            />
+          <span style={{display:"flex",justifyContent:"center", gap:"0.8rem", margin:"0 0.8rem 0 0"}}>
+            <i onClick={viewPasswordFunc} style={{cursor:"pointer",color:"black"}} class="bi bi-eye-slash" id="togglePassword"></i>
+          </span>
+        </div>
+          <button className="createBtn st" onClick={props.signup}>
+            Create account
+          </button>
+          {props.err && <h4 style={{ color: "red", textAlign: "center" }}>{props.msg}</h4>}
+        </form>
+        <div className="register_with">
+          <span></span>
+          <label>Or register with</label>
+          <span></span>
+        </div>
+        <button
+          onClick={() => props.setIsLoading(true)}
+          style={{
+            width: "100%",
+            border: "none",
+            background: "white",
+            margin:"1.2rem 0 0 0"
+          }}
+        >
+          <GoogleOAuthProvider clientId="655477468553-7mnbs4qban6fu1v2gfcs8d2g8gfqbjp5.apps.googleusercontent.com">
+            <GoogleLogin
+              onSuccess={handleGooleAuth}
+              onError={() => {
+                console.log("Login failed")
+              }}
+              />
+          </GoogleOAuthProvider>
+        </button>
+        {/* <div className="google_ico" onClick={handleSignup}>
+          <a className="button google">
+            <img src={google_icon} alt="Google icon" />
+          </a>
+        </div> */}
+      </div>
+    </div>
   )
 }
