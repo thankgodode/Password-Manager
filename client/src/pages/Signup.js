@@ -68,7 +68,21 @@ export default function Signup() {
       return
     }
 
+
+    if (!regex.test(password)) {
+      setError(true)
+      setMsg("Password must contain atleast an uppercase, lowercase and a special character")
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
+
+      return
+    }
+    
+
+
     setIsLoading(true);
+    
     try {
       const response = await axios.post("http://localhost:5000/register", {
         name: `${firstName} ${lastName}`,
@@ -149,6 +163,8 @@ function SignupUI(props) {
     try {
       const res = await axios.post("http://localhost:5000/api/signup/google", {
         token: credentialResonse.credential
+      }, {
+        withCredentials:true
       })
 
       if (res.data.exist) {
@@ -169,6 +185,8 @@ function SignupUI(props) {
 
   return (
     <div className="wrap">
+
+
 
           <Link to="/">
             <div className="back_ico">
@@ -255,6 +273,7 @@ function SignupUI(props) {
               </a>
             </div> */}
 
+
       <Link to="/">
         <div className="back_ico">
           <img src={back_icon} alt="Back icon" className="back" />
@@ -317,6 +336,31 @@ function SignupUI(props) {
           <label>Or register with</label>
           <span></span>
         </div>
+
+        <button
+          onClick={() => props.setIsLoading(true)}
+          style={{
+            width: "100%",
+            border: "none",
+            background: "white",
+            margin:"1.2rem 0 0 0"
+          }}
+        >
+          <GoogleOAuthProvider clientId="655477468553-7mnbs4qban6fu1v2gfcs8d2g8gfqbjp5.apps.googleusercontent.com">
+            <GoogleLogin
+              onSuccess={handleGooleAuth}
+              onError={() => {
+                console.log("Login failed")
+              }}
+              />
+          </GoogleOAuthProvider>
+        </button>
+        {/* <div className="google_ico" onClick={handleSignup}>
+          <a className="button google">
+            <img src={google_icon} alt="Google icon" />
+          </a>
+        </div> */}
+
         <div className="google_ico">
           <a className="button google">
             <img src={google_icon} alt="Google icon" />

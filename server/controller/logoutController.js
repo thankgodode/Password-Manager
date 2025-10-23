@@ -18,7 +18,6 @@ const logoutUser = async (req, res) => {
   const result = await user.save();
 
   res.clearCookie("token", { httpOnly: true, withCredentials: true, sameSite: "Lax" });
-  console.log(user)
   res.sendStatus(204);
 };
 

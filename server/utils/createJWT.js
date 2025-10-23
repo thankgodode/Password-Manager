@@ -10,14 +10,14 @@ const createJWT = (email) => {
 const accessToken = (email) => {
   return jwt.sign({ email },
     process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn:"30s" // realistic 15m/20m
+    expiresIn:"1m" // realistic 15m/20m
   })
 }
 
 const refreshToken = (email) => {
   return jwt.sign({ email }, 
     process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn:"5m" // realistic 1d/2d
+      expiresIn:"3m" // realistic 1d/2d
     }
   )
 }

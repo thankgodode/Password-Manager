@@ -54,6 +54,44 @@ export default function Login() {
   const loginUser = async (e) => {
     e.preventDefault()  
     
+
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s]).+$/;
+
+    //Front-end validation
+    if (!loginEmail || !loginPassword) {
+      setError(true)
+      setMsg("Input field cannot be left blank")
+      setTimeout(() => {
+        setMsg("")
+        setError(false)
+      }, 3000)
+
+      return
+    }
+
+    if (loginPassword.length < 8) {
+      setError(true)
+      setMsg("Password length must be greater than or equal to 8")
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
+
+      return
+    }
+
+    if (!regex.test(loginPassword)) {
+      setError(true)
+      setMsg("Password must contain atleast an uppercase, lowercase and a special character")
+      setTimeout(() => {
+        setMsg("")
+      }, 3000)
+
+      return
+    }
+
+    setIsLoading(true)
+    
+
     const validate = validateLogin(loginEmail, loginPassword, setError, setMsg)
 
     if (validate) {
@@ -61,6 +99,7 @@ export default function Login() {
     }
     
     setIsLoading(true)
+
     try {
       const response = await axios.post("http://localhost:5000/login", {
         email: (loginEmail).toLowerCase(),
@@ -74,7 +113,7 @@ export default function Login() {
       setIsLoading(false)
       console.log(response)
 
-      localStorage.setItem("token", response.data.token)
+      // localStorage.setItem("token", response.data.token)
       chrome.runtime.sendMessage(
         "ifhimppppnnffofkmagbggildngckaol",
         {
@@ -91,9 +130,19 @@ export default function Login() {
       setError(true)
       setIsLoading(false)
 
+
+      if (!err.response || typeof err.response.data.msg !=="string" || !err.response.data) {
+        setMsg("Please check your internet connection :)")
+
+        setTimeout(() => {
+          setMsg("")
+        }, 3000)
+        
+
       const handle = handleLoginError(err, setError, setMsg)
       
       if (handle) {
+
         return
       }
 
@@ -110,9 +159,10 @@ export default function Login() {
     try {
       const res = await axios.post("http://localhost:5000/api/login/google", {
         token: credentialResonse.credential
+      }, {
+        withCredentials:true
       })
 
-      
       const data = res.data.token
 
       localStorage.setItem("token", res.data.token)
@@ -206,6 +256,7 @@ export default function Login() {
                 </h4>
               </Link>
             </div>
+            <button type="submit" onSubmit="console.log('Clicking!')">Click</button>
             <button className="createBtn st" onClick={loginUser}>Login</button>
           </form>
           {error && <h4 style={{color:"red",textAlign:"center"}}>{msg}</h4>}
