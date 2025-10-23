@@ -21,6 +21,7 @@ export default function Dashboard() {
   const navigate = useNavigate()
 
   useEffect(() => {
+
       console.log("Dashboard page...")
       setIsLoading(true)
       const checkAuth = async () => {
@@ -39,6 +40,25 @@ export default function Dashboard() {
       }
 
     checkAuth()
+    console.log("Dashboard page...")
+    setIsLoading(true)
+    const checkAuth = async () => {
+      try {
+        const auth = await API.get("/dashboard");
+        setProfileName(auth.data.user.name)
+
+        setToggleModal("dashboard")
+        setIsLoading(false)
+        console.log("User authorization successfully")
+      } catch (error) {
+        console.log(error)
+        localStorage.removeItem("token")
+        navigate("/login")  
+      }
+    }
+
+      checkAuth()
+
   }, [navigate])
   
   function toggleSavedPassword() {
@@ -57,19 +77,8 @@ export default function Dashboard() {
     setToggleModal("setting");
   }
 
-
   return (
     <>
-      {/* {toggleModal == "add" || toggleModal == "generate" ? (
-        <div className="modal"></div>
-        ) : (
-          ""
-          )} */}
-      {/* {toggleModal == "saved" || toggleModal == "setting" ? (
-        <div className="white_layout" style={{position:"relative"}}></div>
-        ) : (
-          ""
-          )} */}
       <ViewPasswordProvider>
         <div className="wrap">
           {isLoading && <Preloader/>}

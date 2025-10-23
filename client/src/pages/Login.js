@@ -11,7 +11,12 @@ import Preloader from "../components/Preloader";
 import { MyContext } from "../contexts/FeaturesProvider";
 import { ViewPasswordContext } from "../contexts/ViewPasswordContext";
 
+
 import { GoogleOAuthProvider, GoogleLogin} from "@react-oauth/google";
+
+import { validateLogin } from "../utils/validation";
+import { handleLoginError } from "../utils/handleError"
+
 
 export default function Login() {
   const [loginEmail, setLoginEmail] = useState("")
@@ -26,7 +31,7 @@ export default function Login() {
     isLoading,
     setIsLoading,
   } = useContext(MyContext)
-  
+
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -38,7 +43,6 @@ export default function Login() {
         setIsLoading(false)
         navigate("/dashboard")
       } catch (error) {
-        // console.log(error)
         setIsLoading(false)
         localStorage.removeItem("token")
       }
@@ -50,6 +54,7 @@ export default function Login() {
   const loginUser = async (e) => {
     e.preventDefault()  
     
+
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s]).+$/;
 
     //Front-end validation
@@ -86,6 +91,15 @@ export default function Login() {
 
     setIsLoading(true)
     
+
+    const validate = validateLogin(loginEmail, loginPassword, setError, setMsg)
+
+    if (validate) {
+      return
+    }
+    
+    setIsLoading(true)
+
     try {
       const response = await axios.post("http://localhost:5000/login", {
         email: (loginEmail).toLowerCase(),
@@ -98,7 +112,6 @@ export default function Login() {
 
       setIsLoading(false)
       console.log(response)
-      // abbreviateName()
 
       // localStorage.setItem("token", response.data.token)
       chrome.runtime.sendMessage(
@@ -117,6 +130,7 @@ export default function Login() {
       setError(true)
       setIsLoading(false)
 
+
       if (!err.response || typeof err.response.data.msg !=="string" || !err.response.data) {
         setMsg("Please check your internet connection :)")
 
@@ -124,8 +138,14 @@ export default function Login() {
           setMsg("")
         }, 3000)
         
+
+      const handle = handleLoginError(err, setError, setMsg)
+      
+      if (handle) {
+
         return
       }
+
 
       setMsg(err.response.data.msg)
       setTimeout(() => {
@@ -167,6 +187,11 @@ export default function Login() {
       setIsLoading(false)
     }
   };
+
+    }
+
+  }
+
 
   return (
     <>

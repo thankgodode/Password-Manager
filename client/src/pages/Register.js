@@ -110,7 +110,7 @@ function Register() {
                 </content>
               </div>
             </>
-          )}
+        )}
       <ViewPasswordProvider>
         <Outlet />
       </ViewPasswordProvider>

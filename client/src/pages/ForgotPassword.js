@@ -40,7 +40,6 @@ export default function ForgotPassword() {
       }, 3000)
       return
     }
-
     
     setIsLoading(true)
     try {
@@ -59,7 +58,6 @@ export default function ForgotPassword() {
       console.log(error)
       setIsLoading(false)
 
-      
       if (!error.response || typeof error.response.data.msg !=="string" || !error.response.data) {
         setMsg("Please check your internet connection :)")
 
