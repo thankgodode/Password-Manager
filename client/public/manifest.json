@@ -9,7 +9,7 @@
   "permissions": ["storage", "activeTab", "scripting", "tabs","cookies"],
   "action": { "default_popup": "index.html" },
   "content_scripts": [
-    { "matches": ["http://*/*", "https://*/*"], "js": ["contentScript.js"], "all_frames":true,"run_at":"document_end"}
+    { "matches": ["http://*/*", "https://*/*"], "js": ["contentScript.js"], "all_frames":true,"run_at":"document_idle"}
   ],
   "externally_connectable":{"matches": ["http://localhost:3000/*"]},
   "host_permissions":["http://localhost:3000/*"],
